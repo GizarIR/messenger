@@ -15,5 +15,18 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ['username', ]
 
 
+class ChatAdmin(admin.ModelAdmin):
+    pass
+    # list_display = ['name', 'participates']
+    # list_editable = ['name', 'participates']
+    # list_filter = ['username', ]
+    # search_fields = ['username', ]
+
+# class ChatUserAdmin(admin.ModelAdmin):
+#     pass
+
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+admin.site.register(Chat, ChatAdmin)
+# admin.site.register(ChatUser, ChatUserAdmin)
