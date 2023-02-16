@@ -44,7 +44,7 @@ class Message(models.Model):
     time_update = models.DateTimeField(auto_now=True, verbose_name="Обновлено")
 
     def __str__(self):
-        return f'{self.message[:10]}'
+        return f'{self.id} : {self.message[:10]}'
 
     class Meta:
         verbose_name = 'Сообщение'
