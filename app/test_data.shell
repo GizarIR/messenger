@@ -11,3 +11,11 @@ msg1 = Message.objects.create(author=admin, message='Привет всему п�
 msg2 = Message.objects.create(author=user1, message='И тебе привет создатель Админ!', chat=1)
 msg3 = Message.objects.create(author=user2, message='Привет всему второму чату!', chat=2)
 msg4 = Message.objects.create(author=user3, message='И тебе привет создатель Юзер2!', chat=2)
+
+//Получить список участников Чата
+Chat.objects.get(pk=1).participates.values('username')
+chat2.participates.all()
+//Получить список сообщений чата
+Message.objects.filter(chat__id=1)
+chat2.message.all()
+
