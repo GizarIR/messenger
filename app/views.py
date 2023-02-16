@@ -8,3 +8,4 @@ from .serializers import ChatSerializer
 class ChatAPIView(generics.ListAPIView):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
+
