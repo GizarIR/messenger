@@ -25,8 +25,13 @@ class ChatAdmin(admin.ModelAdmin):
 class MessageAdmin(admin.ModelAdmin):
     pass
 
+class ChatParticipantAdmin(admin.ModelAdmin):
+    pass
+
+
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(Chat, ChatAdmin)
 admin.site.register(Message, MessageAdmin)
+admin.site.register(ChatParticipant, ChatParticipantAdmin)

@@ -17,16 +17,13 @@ from .serializers import ChatSerializer
 logging.basicConfig(level=logging.DEBUG)
 
 
-@receiver(post_save, sender=Chat)
-def add_owner_to_participates(sender, instance, created, **kwargs):
-    # logging.info(instance.pk, instance.owner, instance.participates)
-    chat = Chat.objects.get(pk=instance.pk)
-    user = User.objects.get(username=instance.owner)
-    logging.info(f'{chat} : {user}')
-    chat.participates.add(user)
-
-
-
+# @receiver(post_save, sender=Chat)
+# def add_owner_to_participates(sender, instance, created, **kwargs):
+#     # logging.info(instance.pk, instance.owner, instance.participates)
+#     chat = Chat.objects.get(pk=instance.pk)
+#     user = User.objects.get(username=instance.owner)
+#     logging.info(f'{chat} : {user}')
+#     chat.participates.add(user)
 
 
 class ChatAPILIstView(generics.ListCreateAPIView):

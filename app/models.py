@@ -17,17 +17,12 @@ class User(AbstractUser):
 class Chat(models.Model):
     name = models.CharField(max_length=128, verbose_name='Имя чата')
     time_create = models.DateTimeField(auto_now_add=True)
-    participates = models.ManyToManyField(
-        'User',
-        verbose_name='Участники',
-        related_name='participates'
-    )
     owner = models.ForeignKey(
         'User',
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         verbose_name="Владелец",
-        related_name="owner2user",
     )
+    is_private = models.BooleanField(default=False, verbose_name='Личный')
 
     def __str__(self):
         return f'{self.name}'
@@ -36,10 +31,22 @@ class Chat(models.Model):
         verbose_name = 'Чат'
         verbose_name_plural = 'Чаты'
 
+
+class ChatParticipant(models.Model):
+    chat = models.ForeignKey('Chat', on_delete=models.CASCADE, verbose_name="Чат")
+    participant = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name="Автор")
+
+    def __str__(self):
+        return f'{self.chat} - {self.participant}'
+
+    class Meta:
+        verbose_name = 'Участник чата'
+        verbose_name_plural = 'Участники чатов'
+
 class Message(models.Model):
-    author = models.ForeignKey('User', on_delete=models.PROTECT, verbose_name="Автор")
+    author = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name="Автор")
     message = models.TextField(verbose_name='Сообщение')
-    chat = models.ForeignKey('Chat', on_delete=models.PROTECT, verbose_name="Чат")
+    chat = models.ForeignKey('Chat', on_delete=models.CASCADE, verbose_name="Чат")
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Создано")
     time_update = models.DateTimeField(auto_now=True, verbose_name="Обновлено")
 
