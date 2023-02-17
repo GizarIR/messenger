@@ -1,21 +1,31 @@
 from app.models import *
-user1 = User.objects.create(username='user1', email='u1@u.ru', password='123', first_name='Ivan')
-user2 = User.objects.create(username='user2', email='u2@u.ru', password='123', first_name='Petr')
-user3 = User.objects.create(username='user3', email='u3@u.ru', password='123', first_name='Vasya')
+
+user1 = User.objects.create(username='user1', email='u1@example.ru', password='123', first_name='Ivan')
+user2 = User.objects.create(username='user2', email='u2@example.ru', password='123', first_name='Petr')
+user3 = User.objects.create(username='user3', email='u3@example.ru', password='123', first_name='Vasya')
 admin = User.objects.get(pk=1)
 chat1 = Chat.objects.create(name='Первый чат', owner=user1)
 chat2 = Chat.objects.create(name='Второй чат', owner=user2)
-chat1.participates.add(admin, user1)
-chat2.participates.add(user2, user3)
+//chat1.participates.add(admin, user1)
+//chat2.participates.add(user2, user3)
+ChatParticipant.objects.create(chat=chat1, participant=admin)
+ChatParticipant.objects.create(chat=chat1, participant=user1)
+ChatParticipant.objects.create(chat=chat2, participant=user2)
+ChatParticipant.objects.create(chat=chat2, participant=user3)
+
 msg1 = Message.objects.create(author=admin, message='Привет всему первому чату!', chat=1)
-msg2 = Message.objects.create(author=user1, message='И тебе привет создатель Админ!', chat=1)
-msg3 = Message.objects.create(author=user2, message='Привет всему второму чату!', chat=2)
-msg4 = Message.objects.create(author=user3, message='И тебе привет создатель Юзер2!', chat=2)
+msg2 = Message.objects.create(author=user1, message='И тебе привет создатель Админ!', chat=chat1)
+msg3 = Message.objects.create(author=user2, message='Привет всему второму чату!', chat=chat2)
+msg4 = Message.objects.create(author=user3, message='И тебе привет создатель Юзер2!', chat=chat2)
 
 //Получить список участников Чата
 Chat.objects.get(pk=1).participates.values('username')
-chat2.participates.all()
+chat2.participates.all() - реализация с M2M полем
+User.objects.filter(chatparticipant__chat=chat2) - реализация с таблицей соответствия по FK
 //Получить список сообщений чата
 Message.objects.filter(chat__id=1)
-chat2.message.all()
+chat2.message_set.all()
+//Список пользователей с их сообщениями
+chat2.message_set.all().select_related('author').values_list('author__username', 'message')
+
 
