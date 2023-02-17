@@ -26,6 +26,9 @@ def add_owner_to_participates(sender, instance, created, **kwargs):
     chat.participates.add(user)
 
 
+
+
+
 class ChatAPILIstView(generics.ListCreateAPIView):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
