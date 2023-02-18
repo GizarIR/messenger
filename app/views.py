@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import render
 import logging
 
@@ -6,24 +7,9 @@ from rest_framework import generics, request, viewsets, mixins, permissions
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from .models import Chat, User, ChatParticipant
-from .serializers import ChatSerializer
-
+from .serializers import ChatSerializer, UserSerializer
 
 logging.basicConfig(level=logging.DEBUG)
-
-# Список всех чатов
-class ChatAPIListView(generics.ListCreateAPIView):
-    queryset = Chat.objects.all()
-    serializer_class = ChatSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-
-
-# Чтение, изменение, удаление отдельной записи
-class ChatAPIUpdateView(generics.RetrieveUpdateAPIView):
-    queryset = Chat.objects.all()
-    serializer_class = ChatSerializer
-    permission_classes = (IsAuthenticated,) # настройка доступа
-
 
 class IsOwnerChatOrReadOnly(permissions.BasePermission):
 
@@ -32,7 +18,46 @@ class IsOwnerChatOrReadOnly(permissions.BasePermission):
             return True
         return obj.owner == request.user
 
+
+# Список всех чатов
+class ChatAPIListView(generics.ListCreateAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            vip_qs = ChatParticipant.objects.filter(participant=user).values('chat')
+            queryset = Chat.objects.filter(Q(is_private=False) | (Q(is_private=True) & Q(pk__in = vip_qs)))
+        else:
+            queryset = Chat.objects.filter(is_private=False)
+        return queryset
+
+
+# Чтение, изменение, удаление отдельной записи
+class ChatAPIUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerChatOrReadOnly) # настройка доступа
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            vip_qs = ChatParticipant.objects.filter(participant=user).values('chat')
+            queryset = Chat.objects.filter(Q(is_private=False) | (Q(is_private=True) & Q(pk__in = vip_qs)))
+        else:
+            queryset = Chat.objects.filter(is_private=False)
+        return queryset
+
+
 class ChatAPIDestroyView(generics.DestroyAPIView):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
     permission_classes = (IsAuthenticated, IsOwnerChatOrReadOnly) # настройка доступа
+
+
+class UserAPIUpdateView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)

@@ -16,8 +16,7 @@ class UserAdmin(admin.ModelAdmin):
 
 
 class ChatAdmin(admin.ModelAdmin):
-    pass
-    # list_display = ['name', 'participates']
+    list_display = ['name', 'owner', "is_private"]
     # list_editable = ['name', 'participates']
     # list_filter = ['username', ]
     # search_fields = ['username', ]
