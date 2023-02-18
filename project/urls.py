@@ -20,8 +20,9 @@ from app.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/chatlist/', ChatAPILIstView.as_view()),
-    path('api/v1/chatlist/<int:pk>/', ChatAPIUpdateView.as_view()),
+    path('api/v1/chat/', ChatAPIListView.as_view()),
+    path('api/v1/chat/<int:pk>/', ChatAPIUpdateView.as_view()),
+    path('api/v1/chat/<int:pk>/delete/', ChatAPIDestroyView.as_view()),
     path('api/v1/drf-auth/', include('rest_framework.urls')),
     path('api/v1/auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
