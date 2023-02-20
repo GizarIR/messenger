@@ -3,9 +3,11 @@ from .models import Chat, Message, User, ChatParticipant
 
 
 class ChatSerializer(serializers.ModelSerializer):
+    # owner = serializers.HiddenField(default=serializers.CurrentUserDefault()) #позволяет скрыть поле при заполнении
+    owner = serializers.CurrentUserDefault() # заполняет поле значением по умолчанию
     class Meta:
         model = Chat
-        fields = ('name', 'time_create', 'owner', 'is_private')
+        fields = ("__all__")
 
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
