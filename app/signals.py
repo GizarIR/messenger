@@ -12,6 +12,6 @@ def add_owner_to_participants(sender, instance, created, **kwargs):
     # logging.info(instance.pk, instance.owner, instance.participates)
     if created:
         chat_member = ChatParticipant.objects.create(chat=instance, participant=instance.owner)
-        chat_member.save()
-        # print(request.user)
+        chat_member.save() #ВАЖНО
+
 
