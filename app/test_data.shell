@@ -13,7 +13,7 @@ ChatParticipant.objects.create(chat=chat1, participant=user1)
 ChatParticipant.objects.create(chat=chat2, participant=user2)
 ChatParticipant.objects.create(chat=chat2, participant=user3)
 
-msg1 = Message.objects.create(author=admin, message='Привет всему первому чату!', chat=1)
+msg1 = Message.objects.create(author=admin, message='Привет всему первому чату!', chat=chat1)
 msg2 = Message.objects.create(author=user1, message='И тебе привет создатель Админ!', chat=chat1)
 msg3 = Message.objects.create(author=user2, message='Привет всему второму чату!', chat=chat2)
 msg4 = Message.objects.create(author=user3, message='И тебе привет создатель Юзер2!', chat=chat2)
