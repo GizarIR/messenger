@@ -24,10 +24,10 @@ class ChatAdmin(admin.ModelAdmin):
     # search_fields = ['username', ]
 
 class MessageAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['author', 'chat', 'message']
 
 class ChatParticipantAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['chat', 'participant']
 
 
 class UserAgentAdmin(BaseUserAdmin):
