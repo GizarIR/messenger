@@ -1,0 +1,48 @@
+.header{
+    background-color: black;
+    color: green;
+}
+
+.nav{
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+.nav a{
+    text-decoration: none; /*убираем подчеркивание у ссылок*/
+    color: aqua;
+}
+
+.nav a:hover{
+    color: rgb(95, 95, 230);
+}
+
+.brand{
+    padding: 0 1rem;
+    font-size: 25px;
+}
+
+.status{
+    flex: auto;
+    text-align: center;
+    color: brown;
+    /* background-color: aliceblue; */
+}
+
+.nav__list{
+    /* background-color: antiquewhite; */
+    display: flex; /* переводим список в горизонтальный варинат*/
+    flex-grow: 0; /* размер  блока который занимает список */
+    list-style: none; /* убираем точку - поинт в пунктах меню */
+    align-items: center;
+    justify-content: flex-end; /* приклеиваем список меню к правой стороне */
+}
+
+.nav_item{
+    padding: 0 1rem;
+}
+
+.main{
+    display: flex;
+}
