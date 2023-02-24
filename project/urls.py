@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/v1/chat/<int:pk>/delete/', ChatAPIDestroyView.as_view()),
     path('api/v1/user/<int:pk>/update/', UserAPIUpdateView.as_view()),
     path('api/v1/drf-auth/', include('rest_framework.urls')),
+    # path('api/v1/auth/', include('djoser.urls.jwt')),
     path('api/v1/auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
 ]
