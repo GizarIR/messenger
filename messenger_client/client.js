@@ -29,27 +29,40 @@
 //   }
 // fetch('https://picsum.photos/v2/list/?limit=5', options)
 
+
+
+
 const domain = 'http://127.0.0.1:8000/'
-let route = 'api/v1/chat/'
-const htmlStr = domain + route
+let reqPath = 'api/v1/chat/'
+const myRequest = domain + reqPath
 
-const btn = document.querySelector('.btn_signup');
+const chatList = document.querySelector('.list_chat') 
 
-const useRequest = () => {
-    return fetch(htmlStr)
-        .then((response) => {
-            console.log('Got Response', response);
-            return response.json();
-        })
-        .then((json) => {
-            return json
+const loadChats = () => {
+    return fetch(myRequest)
+        .then((response) => {return response.json()})
+        .then((data) => {
+            // console.log('My json:' , data)
+            for (const chat of data){
+                const listItem = document.createElement('li');
+                listItem.append(chat.name);
+                chatList.appendChild(listItem);
+            }
+            return data
         })
         .catch((error) => {
-            console.assertlog('error', error)
+            console.log('error', error)
         })
-}
+};
 
-btn.addEventListener('click', async() => {    
-    const reqResult = await useRequest();
-    console.log('reqResult', reqResult)
-})
+window.onload = loadChats()
+
+const btn = document.querySelector('.btn_home');
+
+btn.addEventListener('click', async () => {
+    chatList.innerHTML = "";
+    const resultResponse = await loadChats();
+    console.log('resultResponse', resultResponse)
+});
+
+
