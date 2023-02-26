@@ -25,7 +25,7 @@
                     <a href="#" class="nav_link btn_signup">Sign up</a>
                 </li>
                 <li class="nav_item">
-                    <a href="#" class="nav_link btn_login">Log in</a>
+                    <a href="#" class="nav_link btn_create">Create chat</a>
                 </li>    
             </ul>
         </nav>
@@ -35,9 +35,17 @@
             <ul class="sidebar_list list_chat"></ul>
         </nav>
         <section class="section">
-            <p>
-                Text chat
-            </p>
+            <form action="" class="form">
+                <label class="label">
+                  <span class="label__title">User:</span>
+                  <input class="label__input" type="text" placeholder="Name" required>
+                </label>
+                <label class="label">
+                    <span class="label__title">Password:</span>
+                    <input class="label__input" type="password" placeholder="Password" required>
+                  </label>
+                <button class="form__submit">Log in</button>
+            </form>
         </section>
         
     </main>

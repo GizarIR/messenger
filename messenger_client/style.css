@@ -69,3 +69,70 @@
     color: aliceblue;
   }
 
+.form {
+    margin: 0 auto;
+    /* display: flex;
+    flex-direction: column; */
+}
+  
+.label {
+    display: flex;
+    margin-top: 10px;
+    position: relative;
+  }
+  
+.label__title {
+    width: 50px;
+    margin-right: 33px;
+    font-weight: normal;
+  }
+    
+.label__input,
+.textarea {
+    padding: 3px;
+    border-radius: 5px;
+    border: 2px solid #343435;
+  }
+  
+.form__submit {
+    font-weight: normal;
+    margin-bottom: 3rem;
+    width: 80px;
+    height: 30px;
+    border-radius: 5px;
+    background: #f3f3f3;
+    border: 2px solid #b9b9ba;
+    cursor: pointer;
+    margin: 2rem 6rem;
+  }
+  
+.label__hint {
+    font-size: 12px;
+    font-weight: bold;
+    position: absolute;
+    left: 300px;
+    padding: 6px;
+    width: 130px;
+    background-color: #d45252;
+    color: white;
+    text-align: center;
+    vertical-align: center;
+    opacity: 0;
+  }
+  
+.label__hint::before{
+    content: '';
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid #d45252;
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+.label__input:invalid + .label__hint {
+    opacity: 1;
+  } 

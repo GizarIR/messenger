@@ -57,12 +57,19 @@ const loadChats = () => {
 
 window.onload = loadChats()
 
-const btn = document.querySelector('.btn_home');
+const btn_home = document.querySelector('.btn_home');
 
-btn.addEventListener('click', async () => {
+btn_home.addEventListener('click', async () => {
     chatList.innerHTML = "";
     const resultResponse = await loadChats();
     console.log('resultResponse', resultResponse)
 });
+
+const btn_signup = document.querySelector('.btn_signup');
+const section = document.querySelector('.section')
+
+// section.innerHTML="";
+
+
 
 
