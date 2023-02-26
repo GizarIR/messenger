@@ -24,7 +24,7 @@
 }
 
 .status{
-    flex: auto;
+    flex: auto; /* занимает весь предоставленный размер */
     text-align: center;
     color: brown;
     /* background-color: aliceblue; */
@@ -46,3 +46,26 @@
 .main{
     display: flex;
 }
+
+.sidebar{
+    padding: 1rem;
+    background-color: rgb(52, 49, 49);
+}
+
+.sidebar_list{
+    /* display: flex; переводим список в горизонтальный варинат */
+    /* flex-grow: -10; размер  блока который занимает список */
+    list-style: none; 
+    align-items: left;
+    justify-content: flex-start;
+    color: green;
+    padding-left: 1rem;
+}
+
+.section{
+    background-color: rgb(68, 59, 59);
+    flex:auto; 
+    padding: 1rem;
+    color: aliceblue;
+  }
+
