@@ -44,11 +44,22 @@ btn_home.addEventListener('click', async () => {
     console.log('resultResponse', resultResponse)
 });
 
+
+const options = {
+    method: 'POST', // выбор метода запроса
+    mode: 'cors', // режим работы запроса
+    headers: { // дополнительные заголовки для запроса
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({"username": "user7", "password": "fghhgfuser123","email": "u7@u.ru" }), 
+    };
+
+
 const regUser = () => {
-    return fetch(domain+reqPathReg, options)
+    return fetch(domain + reqPathReg, options)
         .then((response) => {return response.json()})
         .then((data) => {
-            // console.log('My json:' , data)
+            console.log('My json chats:' , data)
             return data
         })
         .catch((error) => {
@@ -58,20 +69,14 @@ const regUser = () => {
 
 
 let statusSection = document.querySelector('.form_h3_status').firstChild.textContent
-// let btn_submit = document.querySelector('.btn_submit')
-// console.log(btn_submit)
+let btn_submit = document.querySelector('.btn_submit')
+console.log(btn_submit)
 
 if (statusSection == "Registration"){
-    document.forms.form_signup.onsubmit = function() {
-        let username = this.input_name.value;
-        let password = this.input_password.value;
-        let email = this.input_email.value;
-        console.log(username)
-        console.log(password)
-        console.log(email)
-        return false;
-      };
-
+    btn_submit.addEventListener('click', async () => {
+        const resultResponse = await regUser();
+        console.log('resultResponse', resultResponse)
+    });
 }
 
 
