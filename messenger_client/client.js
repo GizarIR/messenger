@@ -1,48 +1,21 @@
-// JSON.stringify() — преобразует объект JavaScript в строку JSON.
-// JSON.parse() — преобразует JSON в объект JavaScript.
-
-// localStorage данные не удаляются даже после закрытия браузера 
-// (можно хранить токены и последние сообщения пользователя) 
-
-// localStorage.setItem('myKey', 'myValue');
-// let myKey = localStorage.getItem('myKey');
-// const jsonString = `
-// {
-//   "book": "Harry Potter"
-// }
-// `;
-// localStorage.setItem('myJSON', jsonString);
-// const myJSON = localStorage.getItem('myJSON');
-// // Выводим сразу как объект
-// console.log('3. myJSON', JSON.parse(myJSON));
-// localStorage.removeItem('myJSON');
-// localStorage.clear();
-
-// const options = {
-//     method: 'GET', // выбор метода запроса
-//     mode: 'cors', // режим работы запроса
-//     headers: { // дополнительные заголовки для запроса
-//       'Content-Type': 'application/json'
-//     },
-//     // body: 'body', // тело запроса
-//     // и тд
-//   }
-// fetch('https://picsum.photos/v2/list/?limit=5', options)
-
-
-
+import { signupForm } from "./forms.js";
 
 const domain = 'http://127.0.0.1:8000/'
-let reqPath = 'api/v1/chat/'
-const myRequest = domain + reqPath
+let reqPathChat = 'api/v1/chat/'
+let reqPathReg = 'api/v1/auth/users/'
+let myRequest = domain + reqPathChat
 
-const chatList = document.querySelector('.list_chat') 
+const chatList = document.querySelector('.list_chat');
+const section = document.querySelector('.section')
+const btn_home = document.querySelector('.btn_home'); 
+const btn_signup = document.querySelector('.btn_signup');
+
 
 const loadChats = () => {
     return fetch(myRequest)
         .then((response) => {return response.json()})
         .then((data) => {
-            // console.log('My json:' , data)
+            // console.log('My json chats:' , data)
             for (const chat of data){
                 const listItem = document.createElement('li');
                 listItem.append(chat.name);
@@ -55,9 +28,15 @@ const loadChats = () => {
         })
 };
 
-window.onload = loadChats()
+function initInterface(){
+    loadChats();
+    section.innerHTML="";
+    section.innerHTML=signupForm;
+}
 
-const btn_home = document.querySelector('.btn_home');
+
+window.onload = initInterface();
+
 
 btn_home.addEventListener('click', async () => {
     chatList.innerHTML = "";
@@ -65,10 +44,36 @@ btn_home.addEventListener('click', async () => {
     console.log('resultResponse', resultResponse)
 });
 
-const btn_signup = document.querySelector('.btn_signup');
-const section = document.querySelector('.section')
+const regUser = () => {
+    return fetch(domain+reqPathReg, options)
+        .then((response) => {return response.json()})
+        .then((data) => {
+            // console.log('My json:' , data)
+            return data
+        })
+        .catch((error) => {
+            console.log('error', error)
+        })
+};
 
-// section.innerHTML="";
+
+let statusSection = document.querySelector('.form_h3_status').firstChild.textContent
+// let btn_submit = document.querySelector('.btn_submit')
+// console.log(btn_submit)
+
+if (statusSection == "Registration"){
+    document.forms.form_signup.onsubmit = function() {
+        let username = this.input_name.value;
+        let password = this.input_password.value;
+        let email = this.input_email.value;
+        console.log(username)
+        console.log(password)
+        console.log(email)
+        return false;
+      };
+
+}
+
 
 
 

@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script defer src="client.js"></script>
+    <script type="module"  src="forms.js"></script>
+    <script defer type="module" src="client.js"></script>
     <title>Client messenger</title>
 </head>
 <body>
@@ -22,7 +23,7 @@
                     <a href="#" class="nav__link btn_home">Home</a>
                 </li>
                 <li class="nav_item">
-                    <a href="#" class="nav_link btn_signup">Sign up</a>
+                    <a href="#" class="nav_link btn_signup">Log in</a>
                 </li>
                 <li class="nav_item">
                     <a href="#" class="nav_link btn_create">Create chat</a>
@@ -35,19 +36,9 @@
             <ul class="sidebar_list list_chat"></ul>
         </nav>
         <section class="section">
-            <form action="" class="form">
-                <label class="label">
-                  <span class="label__title">User:</span>
-                  <input class="label__input" type="text" placeholder="Name" required>
-                </label>
-                <label class="label">
-                    <span class="label__title">Password:</span>
-                    <input class="label__input" type="password" placeholder="Password" required>
-                  </label>
-                <button class="form__submit">Log in</button>
-            </form>
         </section>
         
     </main>
+
 </body>
 </html>
