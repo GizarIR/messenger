@@ -1,5 +1,5 @@
 export const signupForm = `
-<form action="http://127.0.0.1:8000/api/v1/auth/users/" class="form" name="form_signup" id="form">
+<form action="http://127.0.0.1:8000/api/v1/auth/users/" class="form" id="form_signup">
     <h3 class="form_h3_title form_h3_status">Registration</h3>
     <label class="label">
         <span class="label__title">User:</span>
