@@ -16,3 +16,22 @@ export const signupForm = `
     <button class="form__submit btn_submit">Sign up</button>
 </form>
 `
+
+export const profileForm =`
+<form class="form" id="form_profile">
+    <h3 class="form_h3_title form_h3_status">Your profile</h3>
+    <label class="label">
+        <span class="label__title">Username:</span>
+        <input class="label__input" name="username" type="text" placeholder="Name" required>
+    </label>
+    <label class="label">
+        <span class="label__title">Avatar:</span>
+        <input class="label__input" name="password" type="file">
+    </label>
+    <label class="label">
+        <span class="label__title">Email:</span>
+        <input class="label__input" name="email" type="email" placeholder="Email" required>
+    </label>
+    <button class="form__submit btn_submit">Submit</button>
+</form>
+`
