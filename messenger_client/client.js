@@ -11,6 +11,8 @@ const btn_home = document.querySelector('.btn_home');
 const btn_login = document.querySelector('.btn_login'); 
 
 
+const wsUri = "wss://echo.websocket.org/" //тестовый Websocket сервер
+
 const loadChats = () => {
     return fetch(domain + reqPathChat)
         .then((response) => {return response.json()})
@@ -18,7 +20,9 @@ const loadChats = () => {
             // console.log('My json chats:' , data)
             for (const chat of data){
                 const listItem = document.createElement('li');
-                listItem.append(chat.name);
+                listItem.setAttribute("class", "sidebar_li");
+                // listItem.append(chat.name);
+                listItem.innerHTML = `<a href=${wsUri} id="btn_sb_${chat.id}">${chat.name}</a>`
                 chatList.appendChild(listItem);
             }
             return data
@@ -28,11 +32,33 @@ const loadChats = () => {
         })
 };
 
+function isAuthenticated(){
+    let user = JSON.parse(localStorage.getItem('user'));  
+    return  user ? user : false
+};
+
+
+function showProfile(cur_user){
+    btn_login.textContent =  cur_user.username+ "/logout";
+    section.innerHTML="";
+    section.innerHTML=profileForm;
+    btn_login.textContent = cur_user.username + "/logout";
+    document.forms.form_profile.username.value = cur_user.username;
+    // console.log(newuser.username)
+    document.forms.form_profile.email.value = cur_user.email;
+};
+
+
 function initInterface(){
     loadChats();
     section.innerHTML="";
     section.innerHTML=signupForm;
-}
+    let cur_user = isAuthenticated();
+    // console.log(cur_user);
+    if (cur_user){
+        showProfile(cur_user);
+    }
+};
 
 
 window.onload = initInterface();
@@ -97,7 +123,11 @@ if (statusSection.id == "form_signup"){
                 .then((dataToken)=>{
                     console.log('Token recieved:', dataToken.auth_token);
                     localStorage.clear();
-                    localStorage.setItem(userForLogin.username, dataToken.auth_token);
+                    localStorage.setItem("user", `{
+                        "username": "${userForLogin.username}",
+                        "token": "${dataToken.auth_token}",
+                        "email": "${newuser.email}"
+                    }`);
                     return true
                 })
                 .catch((error)=>{
@@ -108,12 +138,7 @@ if (statusSection.id == "form_signup"){
 
         // Если получили доступ, то загружаем форму профиля
         if(accessAccept){
-            section.innerHTML="";
-            section.innerHTML=profileForm;
-            btn_login.textContent = newuser.username + "/logout";
-            document.forms.form_profile.username.value = newuser.username;
-            // console.log(newuser.username)
-            document.forms.form_profile.email.value = newuser.email;
+            showProfile(newuser);
         }
     }); //addEventListener callback
-} //if statusSection - form_signup - дальше лучше использовать switch - case
+} //if statusSection - form_signup - дальше может быть лучше использовать switch - case

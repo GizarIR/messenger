@@ -136,3 +136,17 @@
 .label__input:invalid + .label__hint {
     opacity: 1;
   } 
+
+
+.sidebar_li{
+    color: green;;
+}
+
+.sidebar_li a{
+    text-decoration: none; /*убираем подчеркивание у ссылок меню*/
+    color:  green;
+}
+
+.sidebar_li a:hover{
+    color: rgb(147, 198, 147);
+}
