@@ -31,7 +31,7 @@
 
 
 
-
+// Вариант реализации через нейминг
 // document.forms.form_signup.onsubmit = function() {
 //     let Myusername = this.input_name.value;
 //     let Mypassword = this.input_password.value;
@@ -65,18 +65,6 @@
 //   };
 
 
-// function regUser(){
-//     return fetch("http://127.0.0.1:8000/api/v1/auth/users/", options)
-//         .then((response) => {return response.json()})
-//         .then((data) => {
-//             console.log('My json reg:' , data)
-//             return data
-//         })
-//         .catch((error) => {
-//             console.log('error', error)
-//         })
-// };
-
 // const options = {
 //     method: "POST", 
 //     mode: 'cors', 
@@ -92,7 +80,6 @@
 //     password: "fghhgfuser123", 
 //     email: "u14@u.ru"
 //     };
-
 //     const resultResponse = await fetch('http://127.0.0.1:8000/api/v1/auth/users/', {
 //         method: "POST",
 //         mode: "cors",
@@ -144,7 +131,7 @@
 //     return false
 //     };
 
-// Полностью рабочий ариант
+// Полностью рабочий вариант
 // async function postFormDataAsJson({ url, formData }) {
 // 	const plainFormData = Object.fromEntries(formData.entries());
 // 	const formDataJsonString = JSON.stringify(plainFormData);

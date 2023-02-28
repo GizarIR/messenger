@@ -3,14 +3,13 @@ import { signupForm } from "./forms.js";
 const domain = 'http://127.0.0.1:8000/'
 let reqPathChat = 'api/v1/chat/'
 let reqPathReg = 'api/v1/auth/users/'
-let myRequest = domain + reqPathChat
 
 const chatList = document.querySelector('.list_chat');
 const section = document.querySelector('.section')
 const btn_home = document.querySelector('.btn_home'); 
 
 const loadChats = () => {
-    return fetch(myRequest)
+    return fetch(domain + reqPathChat)
         .then((response) => {return response.json()})
         .then((data) => {
             // console.log('My json chats:' , data)
@@ -50,14 +49,16 @@ const statusSection = document.getElementById('form_signup');
 if (statusSection){
     const form = document.getElementById('form_signup');
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
         
-        event.preventDefault();
-        const formData = new FormData(form);
-        const plainFormData = Object.fromEntries(formData.entries());
-	    const formDataJsonString = JSON.stringify(plainFormData);
+        event.preventDefault(); //отключаем поведение формы по умолчанию
+        const formData = new FormData(form); //создаем объект для обработки данных формы
+        //получаем данные в виде пары ключ:значение, в форме input name - ключ, value - значение 
+        const plainFormData = Object.fromEntries(formData.entries()); //в виде текста
+	    const formDataJsonString = JSON.stringify(plainFormData); //преобразуем в json
 
-        const options = {
+        // готовим параметры POST запроса
+        const fetchOptions = {
             method: "POST", 
             mode: 'cors', 
             headers: { 
@@ -67,15 +68,15 @@ if (statusSection){
             body: formDataJsonString
         }; 
 
-        fetch('http://127.0.0.1:8000/api/v1/auth/users/', options)
+        //отправляем асинхроныый запрос на 'http://127.0.0.1:8000/api/v1/auth/users/'
+        await fetch(domain + reqPathReg, fetchOptions)
             .then((response)=>{return response.json()})
             .then((data)=>{
                 console.log('My registration data', data);
                 return data
             })
             .catch((error)=>{
-                console.log('Happened ERROR:', error )
+                console.log('An ERROR has occured:', error )
             })
     });
-
 }
