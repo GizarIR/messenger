@@ -8,10 +8,15 @@ const reqPathLogin = 'auth/token/login/';
 const chatList = document.querySelector('.list_chat');
 const section = document.querySelector('.section')
 const btn_home = document.querySelector('.btn_home'); 
-const btn_login = document.querySelector('.btn_login'); 
+const btn_login = document.querySelector('.btn_login');
+const btn_create = document.querySelector('.btn_create'); 
+const btn_close = document.querySelector('.btn_close'); 
+const btn_send = document.querySelector('.btn_send'); 
+
+const lbl_status_connect = document.getElementById('status_connect');
 
 
-const wsUri = "wss://echo.websocket.org/" //тестовый Websocket сервер
+
 
 const loadChats = () => {
     return fetch(domain + reqPathChat)
@@ -141,4 +146,56 @@ if (statusSection.id == "form_signup"){
             showProfile(newuser);
         }
     }); //addEventListener callback
-} //if statusSection - form_signup - дальше может быть лучше использовать switch - case
+} else { //if statusSection - form_signup - дальше может быть лучше использовать switch - case
+    if(statusSection.id == "form_profile"){
+        console.log("Here should be handle Submit button Profile form") // TODO - create handler for Submit's button Profile form
+    };//  if(statusSection.id == "form_profile")
+};
+
+// далее идет обработка функционала Websocket
+let websocket;
+
+const wsUri = "wss://echo.websocket.org/" //тестовый Websocket сервер
+
+function writeToScreen(message){
+    let pre = document.createElement("p");
+    pre.setAttribute("overflow-wrap", "break-word");
+    pre.innerHTML = message;
+    section.appendChild(pre);
+};
+
+btn_create.addEventListener('click', ()=>{
+    section.innerHTML = ""
+    websocket = new WebSocket(wsUri);
+    console.log(websocket);
+
+    websocket.onopen = function(event){
+        lbl_status_connect.setAttribute("color","green");
+        lbl_status_connect.textContent = "CONNECTED";
+    };
+    
+    websocket.onclose = function(event){
+        lbl_status_connect.setAttribute("color","red");
+        lbl_status_connect.textContent = "DISCONNECTED";
+    };
+    
+    websocket.onmessage = function(event){
+        writeToScreen('<span style="color: blue;">RESPONSE: ' + event.data + '</span>');
+    };
+    
+    websocket.onerror = function(event){
+        writeToScreen('<span style="color: red;">ERROR:</span> ' + event.data);
+    };
+});
+
+btn_close.addEventListener('click', ()=>{
+    websocket.close();
+    websocket = null;
+});
+
+btn_send.addEventListener('click', ()=>{
+    const message = "Test message";
+    writeToScreen("SENT: " + message);
+    websocket.send(message);
+});
+
