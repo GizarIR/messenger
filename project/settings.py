@@ -35,6 +35,7 @@ AUTH_USER_MODEL = "app.User"
 INSTALLED_APPS = [
     'daphne',
     'channels',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

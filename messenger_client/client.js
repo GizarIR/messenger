@@ -1,4 +1,4 @@
-import { signupForm, profileForm } from "./forms.js";
+import { signupForm, profileForm, chatForm } from "./forms.js";
 
 const domain = 'http://127.0.0.1:8000/';
 const reqPathChat = 'api/v1/chat/';
@@ -155,7 +155,7 @@ if (statusSection.id == "form_signup"){
 // далее идет обработка функционала Websocket
 let websocket;
 
-const wsUri = "wss://echo.websocket.org/" //тестовый Websocket сервер
+const wsUri = 'ws://' + window.location.host + '/ws/chat/' + 'lobby/'
 
 function writeToScreen(message){
     let pre = document.createElement("p");
@@ -165,8 +165,8 @@ function writeToScreen(message){
 };
 
 btn_create.addEventListener('click', ()=>{
-    section.innerHTML = ""
-    websocket = new WebSocket(wsUri);
+    section.innerHTML = chatForm;
+    websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/');
     console.log(websocket);
 
     websocket.onopen = function(event){
@@ -180,7 +180,9 @@ btn_create.addEventListener('click', ()=>{
     };
     
     websocket.onmessage = function(event){
-        writeToScreen('<span style="color: blue;">RESPONSE: ' + event.data + '</span>');
+        // writeToScreen('<span style="color: blue;">RESPONSE: ' + event.data + '</span>');
+        const data = JSON.parse(event.data);
+        document.querySelector('#chat-log').value += (data.message + '\n');
     };
     
     websocket.onerror = function(event){
@@ -193,9 +195,24 @@ btn_close.addEventListener('click', ()=>{
     websocket = null;
 });
 
-btn_send.addEventListener('click', ()=>{
-    const message = "Test message";
-    writeToScreen("SENT: " + message);
-    websocket.send(message);
-});
+// btn_send.addEventListener('click', ()=>{
+//     const message = "Test message";
+//     writeToScreen("SENT: " + message);
+//     websocket.send(message);
+// });
 
+document.querySelector('#chat-message-input').focus();
+document.querySelector('#chat-message-input').onkeyup = function(e) {
+    if (e.keyCode === 13) {  // enter, return
+        document.querySelector('#chat-message-submit').click();
+    }
+};
+
+document.querySelector('#chat-message-submit').onclick = function(e) {
+    const messageInputDom = document.querySelector('#chat-message-input');
+    const message = messageInputDom.value;
+    websocket.send(JSON.stringify({
+        'message': message
+    }));
+    messageInputDom.value = '';
+};

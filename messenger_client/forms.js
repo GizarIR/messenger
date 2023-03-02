@@ -35,3 +35,9 @@ export const profileForm =`
     <button class="form__submit btn_submit">Submit</button>
 </form>
 `
+
+export const chatForm = `
+    <textarea id="chat-log" cols="50" rows="20"></textarea><br>
+    <input id="chat-message-input" type="text" size="50"><br>
+    <input id="chat-message-submit" type="button" value="Send">
+`
