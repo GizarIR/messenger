@@ -60,6 +60,7 @@ function showProfileForm(cur_user){
 async function initInterface(){
     await loadChats();
     section.innerHTML = signupForm;
+    handleSignupForm();
     let cur_user = isAuthenticated();
     if (cur_user){
         showProfileForm(cur_user);
@@ -81,7 +82,7 @@ async function showInterface(){
     statusSection = document.querySelector('.form_h3_status').firstChild.textContent;
     console.log(statusSection);
 
-    if (statusSection == "Registration"){
+    if (statusSection === "Registration"){
         handleSignupForm();
     };
 
@@ -144,6 +145,7 @@ btn_close.addEventListener('click', ()=>{
 
 
 function handleSignupForm(){
+    console.log('We are into Registration form')
     const form = document.getElementById('form_signup');
     // console.log(statusSection.id)
     form.addEventListener('submit', async (event) => {        
@@ -206,7 +208,7 @@ function handleSignupForm(){
 
         // Если получили доступ, то загружаем форму профиля
         if(accessAccept){
-            showProfile(newuser);
+            showProfileForm(newuser);
         }
     }); //addEventListener callback
 };
