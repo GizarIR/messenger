@@ -37,6 +37,7 @@ export const profileForm =`
 `
 
 export const chatForm = `
+    <h3 class="form_h3_title form_h3_status">Chat</h3>
     <textarea id="chat-log" cols="50" rows="20"></textarea><br>
     <input id="chat-message-input" type="text" size="50"><br>
     <input id="chat-message-submit" type="button" value="Send">

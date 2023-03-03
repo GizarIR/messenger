@@ -5,20 +5,23 @@ const reqPathChat = 'api/v1/chat/';
 const reqPathReg = 'api/v1/auth/users/';
 const reqPathLogin = 'auth/token/login/';
 
+
+
 const chatList = document.querySelector('.list_chat');
 const section = document.querySelector('.section')
 const btn_home = document.querySelector('.btn_home'); 
 const btn_login = document.querySelector('.btn_login');
 const btn_create = document.querySelector('.btn_create'); 
-const btn_close = document.querySelector('.btn_close'); 
-const btn_send = document.querySelector('.btn_send'); 
+const btn_close = document.querySelector('.btn_close');
+// const btn_send = document.querySelector('.btn_send');
+let statusSection;
 
 const lbl_status_connect = document.getElementById('status_connect');
-
-
-
+const wsUri = 'ws://' + window.location.host + '/ws/chat/'
+let websocket;
 
 const loadChats = () => {
+    chatList.innerHTML = "";
     return fetch(domain + reqPathChat)
         .then((response) => {return response.json()})
         .then((data) => {
@@ -27,6 +30,7 @@ const loadChats = () => {
                 const listItem = document.createElement('li');
                 listItem.setAttribute("class", "sidebar_li");
                 // listItem.append(chat.name);
+                let fullWsUri = `${wsUri} + ${chat.name} + '/'`;
                 listItem.innerHTML = `<a href=${wsUri} id="btn_sb_${chat.id}">${chat.name}</a>`
                 chatList.appendChild(listItem);
             }
@@ -43,8 +47,7 @@ function isAuthenticated(){
 };
 
 
-function showProfile(cur_user){
-    btn_login.textContent =  cur_user.username+ "/logout";
+function showProfileForm(cur_user){
     section.innerHTML="";
     section.innerHTML=profileForm;
     btn_login.textContent = cur_user.username + "/logout";
@@ -54,33 +57,93 @@ function showProfile(cur_user){
 };
 
 
-function initInterface(){
-    loadChats();
-    section.innerHTML="";
-    section.innerHTML=signupForm;
+async function initInterface(){
+    await loadChats();
+    section.innerHTML = signupForm;
     let cur_user = isAuthenticated();
-    // console.log(cur_user);
     if (cur_user){
-        showProfile(cur_user);
+        showProfileForm(cur_user);
     }
+    // const statusSection = document.querySelector("form");
+    statusSection = document.querySelector('.form_h3_status').firstChild.textContent;
+    console.log(statusSection)
 };
-
 
 window.onload = initInterface();
 
 
-btn_home.addEventListener('click', async () => {
-    chatList.innerHTML = "";
+async function showInterface(){
+    let cur_user = isAuthenticated();
+
     const resultResponse = await loadChats();
     console.log('resultResponse', resultResponse)
+
+    statusSection = document.querySelector('.form_h3_status').firstChild.textContent;
+    console.log(statusSection);
+
+    if (statusSection == "Registration"){
+        handleSignupForm();
+    };
+
+
+    if(statusSection == "Your profile"){
+        console.log("Here should be handle Submit button Profile form") // TODO - create handler for Submit's button Profile form
+    };//  if(statusSection.id == "form_profile")
+
+    if(statusSection == "Chat"){
+        handleChatForm();
+    };
+
+};
+
+
+btn_home.addEventListener('click', () => {
+    section.innerHTML = profileForm;
+    showInterface();
+});
+
+btn_create.addEventListener('click', ()=>{
+    section.innerHTML = chatForm;
+    showInterface();
+    
+    function writeToScreen(message){
+        let pre = document.createElement("p");
+        pre.setAttribute("overflow-wrap", "break-word");
+        pre.innerHTML = message;
+        section.appendChild(pre);
+    };
+    
+    websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/');
+    // console.log(websocket);
+
+    websocket.onopen = function(event){
+        lbl_status_connect.setAttribute("color","green");
+        lbl_status_connect.textContent = "CONNECTED";
+    };
+
+    websocket.onclose = function(event){
+        lbl_status_connect.setAttribute("color","red");
+        lbl_status_connect.textContent = "DISCONNECTED";
+    };
+
+    websocket.onmessage = function(event){
+        // writeToScreen('<span style="color: blue;">RESPONSE: ' + event.data + '</span>');
+        const data = JSON.parse(event.data);
+        document.querySelector('#chat-log').value += (data.message + '\n');
+    };
+
+    websocket.onerror = function(event){
+        writeToScreen('<span style="color: red;">ERROR:</span> ' + event.data);
+    };
+});
+
+btn_close.addEventListener('click', ()=>{
+    websocket.close();
+    websocket = null;
 });
 
 
-const statusSection = document.querySelector("form");
-// let statusSection = document.querySelector('.form_h3_status').firstChild.textContent;
-
-
-if (statusSection.id == "form_signup"){
+function handleSignupForm(){
     const form = document.getElementById('form_signup');
     // console.log(statusSection.id)
     form.addEventListener('submit', async (event) => {        
@@ -146,73 +209,33 @@ if (statusSection.id == "form_signup"){
             showProfile(newuser);
         }
     }); //addEventListener callback
-} else { //if statusSection - form_signup - дальше может быть лучше использовать switch - case
-    if(statusSection.id == "form_profile"){
-        console.log("Here should be handle Submit button Profile form") // TODO - create handler for Submit's button Profile form
-    };//  if(statusSection.id == "form_profile")
 };
 
-// далее идет обработка функционала Websocket
-let websocket;
 
-const wsUri = 'ws://' + window.location.host + '/ws/chat/' + 'lobby/'
+function handleChatForm(){
+    // далее идет обработка функционала Websocket
+    console.log('We are into interface of chat');
+    const btn_send = document.getElementById('chat-message-submit');
+    const input_message = document.getElementById('chat-message-input');
 
-function writeToScreen(message){
-    let pre = document.createElement("p");
-    pre.setAttribute("overflow-wrap", "break-word");
-    pre.innerHTML = message;
-    section.appendChild(pre);
-};
+    // const wsUri = 'ws://' + window.location.host + '/ws/chat/' + 'lobby/'
 
-btn_create.addEventListener('click', ()=>{
-    section.innerHTML = chatForm;
-    websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/');
-    console.log(websocket);
 
-    websocket.onopen = function(event){
-        lbl_status_connect.setAttribute("color","green");
-        lbl_status_connect.textContent = "CONNECTED";
+    input_message.focus();
+    input_message.onkeyup = function(e){
+        // console.log('Kere code', e.code );
+        if (e.code === "Enter") {  // enter, return
+        btn_send.click();
+        }
     };
     
-    websocket.onclose = function(event){
-        lbl_status_connect.setAttribute("color","red");
-        lbl_status_connect.textContent = "DISCONNECTED";
+    btn_send.onclick = function(event){
+        const message = input_message.value;
+        // console.log(message)
+        websocket.send(JSON.stringify({
+            'message': message
+        }));
+        input_message.value = '';
     };
-    
-    websocket.onmessage = function(event){
-        // writeToScreen('<span style="color: blue;">RESPONSE: ' + event.data + '</span>');
-        const data = JSON.parse(event.data);
-        document.querySelector('#chat-log').value += (data.message + '\n');
-    };
-    
-    websocket.onerror = function(event){
-        writeToScreen('<span style="color: red;">ERROR:</span> ' + event.data);
-    };
-});
 
-btn_close.addEventListener('click', ()=>{
-    websocket.close();
-    websocket = null;
-});
-
-// btn_send.addEventListener('click', ()=>{
-//     const message = "Test message";
-//     writeToScreen("SENT: " + message);
-//     websocket.send(message);
-// });
-
-document.querySelector('#chat-message-input').focus();
-document.querySelector('#chat-message-input').onkeyup = function(e) {
-    if (e.keyCode === 13) {  // enter, return
-        document.querySelector('#chat-message-submit').click();
-    }
-};
-
-document.querySelector('#chat-message-submit').onclick = function(e) {
-    const messageInputDom = document.querySelector('#chat-message-input');
-    const message = messageInputDom.value;
-    websocket.send(JSON.stringify({
-        'message': message
-    }));
-    messageInputDom.value = '';
 };
