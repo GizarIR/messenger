@@ -9,6 +9,9 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from .models import Chat, User, ChatParticipant
 from .serializers import ChatSerializer, UserSerializer
 
+from django.contrib.auth.models import AnonymousUser
+from rest_framework.authtoken.models import Token
+
 logging.basicConfig(level=logging.DEBUG)
 
 class IsOwnerChatOrReadOnly(permissions.BasePermission):
@@ -61,3 +64,4 @@ class UserAPIUpdateView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
+

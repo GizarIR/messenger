@@ -42,3 +42,18 @@ export const chatForm = `
     <input id="chat-message-input" type="text" size="50"><br>
     <input id="chat-message-submit" type="button" value="Send">
 `
+
+export const loginForm = `
+<form class="form" id="form_login">
+    <h3 class="form_h3_title form_h3_status">Login</h3>
+    <label class="label">
+        <span class="label__title">User:</span>
+        <input class="label__input" name="username" type="text" placeholder="Name" required>
+    </label>
+    <label class="label">
+        <span class="label__title">Password:</span>
+        <input class="label__input" name="password" type="password" placeholder="Password" required>
+    </label>
+    <button class="form__submit btn_submit">Sign in</button>
+</form>
+`

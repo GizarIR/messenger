@@ -23,7 +23,6 @@ class TokenAuthMiddleWare:
         query_dict = parse_qs(query_params)
         print("GOT QUERY_DICT", query_dict)
         token = query_dict["token"][0]
-        # token = query_dict.get("token", "")
         print("GOT TOKEN", token)
         user = await returnUser(token)
         scope["user"] = user

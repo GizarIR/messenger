@@ -1,4 +1,4 @@
-import { signupForm, profileForm, chatForm } from "./forms.js";
+import { signupForm, profileForm, chatForm, loginForm } from "./forms.js";
 
 const domain = 'http://127.0.0.1:8000/';
 const reqPathChat = 'api/v1/chat/';
@@ -86,6 +86,9 @@ async function showInterface(){
         handleSignupForm();
     };
 
+    if (statusSection == "Login"){
+        handleLoginForm();
+    };
 
     if(statusSection == "Your profile"){
         console.log("Here should be handle Submit button Profile form") // TODO - create handler for Submit's button Profile form
@@ -105,10 +108,16 @@ btn_home.addEventListener('click', () => {
 
 
 btn_login.addEventListener('click', ()=>{
-    localStorage.clear();
-    section.innerHTML = signupForm;
-    showInterface();
-    btn_login.textContent = "Log in";
+    if (isAuthenticated()){
+        localStorage.clear();
+        section.innerHTML = signupForm;
+        showInterface();
+        btn_login.textContent = "Log in";
+    } else {
+        section.innerHTML = loginForm;
+        showInterface();
+    }
+
 });
 
 
@@ -227,6 +236,82 @@ function handleSignupForm(){
     }); //addEventListener callback
 };
 
+
+function handleLoginForm(){
+    console.log('We are into Login form')
+    const form = document.getElementById('form_login');
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault(); //отключаем поведение формы по умолчанию
+        const formData = new FormData(form); //создаем объект для обработки данных формы
+        //получаем данные в виде пары ключ:значение, в форме input name - ключ, value - значение
+        const plainFormData = Object.fromEntries(formData.entries()); //в виде текста
+	    const formDataJsonString = JSON.stringify(plainFormData); //преобразуем в json
+        console.log("formDataJsonString :" + formDataJsonString);
+        const cur_user = JSON.parse(formDataJsonString);
+
+        // готовим параметры POST запроса
+
+        const userForLogin = {
+            "username":cur_user.username,
+            "password":cur_user.password
+        };
+
+        const fetchOptions = {
+            method: "POST",
+            mode: 'cors',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userForLogin)
+        };
+
+        let tokenAccept = null;
+
+        tokenAccept = await fetch(domain + reqPathLogin, fetchOptions)
+            .then((response)=>{return response.json()})
+            .then((dataToken)=>{
+                console.log('Token recieved:', dataToken.auth_token);
+                return dataToken.auth_token
+            })
+            .catch((error)=>{
+                console.log('An ERROR has occurred:', error )
+                return false
+            });
+
+        // Если получили доступ, то загружаем форму профиля
+        if(tokenAccept){
+
+            const fetchOptions = {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': "Token " + tokenAccept
+                }
+            };
+
+            let userFromResponse = await fetch(domain + reqPathReg + 'me/', fetchOptions)
+                .then((response)=>{return response.json()})
+                .then((dataUser)=>{
+                    console.log('User received:', dataUser);
+                    localStorage.clear();
+                    localStorage.setItem("messenger_user", `{
+                        "username": "${dataUser.username}",
+                        "token": "${tokenAccept}",
+                        "email": "${dataUser.email}"
+                    }`);
+                    return dataUser
+                })
+                .catch((error)=>{
+                    console.log('An ERROR has occurred:', error )
+                    return false
+                });
+
+            showProfileForm(userFromResponse);
+        };
+    });
+};
 
 function handleChatForm(){
     // далее идет обработка функционала Websocket
