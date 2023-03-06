@@ -30,8 +30,8 @@ const loadChats = () => {
                 const listItem = document.createElement('li');
                 listItem.setAttribute("class", "sidebar_li");
                 // listItem.append(chat.name);
-                let fullWsUri = `${wsUri} + ${chat.name} + '/'`;
-                listItem.innerHTML = `<a href=${wsUri} id="btn_sb_${chat.id}">${chat.name}</a>`
+                let fullWsUri = `${wsUri} + 'chat_' + ${chat.id} + '/'`;
+                listItem.innerHTML = `<a href=${fullWsUri} id="btn_sb_${chat.id}">${chat.name}</a>`
                 chatList.appendChild(listItem);
             }
             return data
@@ -42,7 +42,7 @@ const loadChats = () => {
 };
 
 function isAuthenticated(){
-    let user = JSON.parse(localStorage.getItem('user'));  
+    let user = JSON.parse(localStorage.getItem('messenger_user'));
     return  user ? user : false
 };
 
@@ -103,6 +103,15 @@ btn_home.addEventListener('click', () => {
     showInterface();
 });
 
+
+btn_login.addEventListener('click', ()=>{
+    localStorage.clear();
+    section.innerHTML = signupForm;
+    showInterface();
+    btn_login.textContent = "Log in";
+});
+
+
 btn_create.addEventListener('click', ()=>{
     section.innerHTML = chatForm;
     showInterface();
@@ -113,9 +122,13 @@ btn_create.addEventListener('click', ()=>{
         pre.innerHTML = message;
         section.appendChild(pre);
     };
-    
-    websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/?token=6b50ca89f721f48d8b20b114a347df728399d3b0');
+
+    const user = JSON.parse(localStorage.getItem("messenger_user"));
+    console.log('GOT TOKEN FOR WEBSOCKET: ' + user.token)
+
+    // websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/?token=6b50ca89f721f48d8b20b114a347df728399d3b0');
     // websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/');
+    websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/?token=' + user.token);
     // console.log(websocket);
 
     websocket.onopen = function(event){
@@ -194,7 +207,7 @@ function handleSignupForm(){
                 .then((dataToken)=>{
                     console.log('Token recieved:', dataToken.auth_token);
                     localStorage.clear();
-                    localStorage.setItem("user", `{
+                    localStorage.setItem("messenger_user", `{
                         "username": "${userForLogin.username}",
                         "token": "${dataToken.auth_token}",
                         "email": "${newuser.email}"

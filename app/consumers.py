@@ -10,10 +10,11 @@ from channels.generic.websocket import (
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        # self.chat_name = self.scope['url_route']['kwargs']['chat_name'] # chat_name берем из routing.py
-        self.chat_name = "lobby"
+        self.chat_name = self.scope['url_route']['kwargs']['chat_name'] # chat_name берем из routing.py
+        # self.chat_name = "lobby"
+        print("CHAT_NAME: ", self.chat_name)
         self. chat_group_name = f'chat_{self.chat_name}'
-        print("USER!!!!",  self.scope["user"])
+        print("USER: ",  self.scope["user"])
         # print(self.scope["user"].email)
 
         await self.channel_layer.group_add(
