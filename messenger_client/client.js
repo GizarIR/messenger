@@ -114,7 +114,8 @@ btn_create.addEventListener('click', ()=>{
         section.appendChild(pre);
     };
     
-    websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/');
+    websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/?token=6b50ca89f721f48d8b20b114a347df728399d3b0');
+    // websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/');
     // console.log(websocket);
 
     websocket.onopen = function(event){

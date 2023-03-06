@@ -10,8 +10,11 @@ from channels.generic.websocket import (
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.chat_name = self.scope['url_route']['kwargs']['chat_name'] # chat_name берем из routing.py
+        # self.chat_name = self.scope['url_route']['kwargs']['chat_name'] # chat_name берем из routing.py
+        self.chat_name = "lobby"
         self. chat_group_name = f'chat_{self.chat_name}'
+        print("USER!!!!",  self.scope["user"])
+        # print(self.scope["user"].email)
 
         await self.channel_layer.group_add(
             self.chat_group_name,
@@ -28,6 +31,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
+        print("TEXT_DATA",text_data)
         message = text_data_json["message"]
 
         await self.channel_layer.group_send(
@@ -39,8 +43,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
     async def chat_message(self, event):
-        message = event['message']
-
+        message = self.scope["user"].username + ": "+ event['message']
         await self.send(text_data=json.dumps({
             'message': message,
         }))
