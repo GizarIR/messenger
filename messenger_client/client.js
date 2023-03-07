@@ -4,6 +4,7 @@ const domain = 'http://127.0.0.1:8000/';
 const reqPathChat = 'api/v1/chat/';
 const reqPathReg = 'api/v1/auth/users/';
 const reqPathLogin = 'auth/token/login/';
+const reqPathSetUsername = 'api/v1/auth/users/set_username/';
 
 
 
