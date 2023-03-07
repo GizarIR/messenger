@@ -14,7 +14,7 @@ const btn_home = document.querySelector('.btn_home');
 const btn_login = document.querySelector('.btn_login');
 const btn_create = document.querySelector('.btn_create'); 
 const btn_close = document.querySelector('.btn_close');
-// const btn_send = document.querySelector('.btn_send');
+
 let statusSection;
 
 const lbl_status_connect = document.getElementById('status_connect');
@@ -53,7 +53,6 @@ function showProfileForm(cur_user){
     section.innerHTML=profileForm;
     btn_login.textContent = cur_user.username + "/logout";
     document.forms.form_profile.username.value = cur_user.username;
-    // console.log(newuser.username)
     document.forms.form_profile.email.value = cur_user.email;
 };
 
