@@ -57,3 +57,13 @@ export const loginForm = `
     <button class="form__submit btn_submit">Sign in</button>
 </form>
 `
+export const createChatForm = `
+<form class="form" id="form_create_chat">
+    <h3 class="form_h3_title form_h3_status">Enter name of new chat</h3>
+    <label class="label">
+        <span class="label__title">Name:</span>
+        <input class="label__input" name="chatname" type="text" placeholder="Name" required>
+    </label>
+    <button class="form__submit btn_submit">Create</button>
+</form>
+`

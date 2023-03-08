@@ -1,4 +1,4 @@
-import { signupForm, profileForm, chatForm, loginForm } from "./forms.js";
+import { signupForm, profileForm, chatForm, loginForm, createChatForm} from "./forms.js";
 
 const domain = 'http://127.0.0.1:8000/';
 const reqPathChat = 'api/v1/chat/';
@@ -82,7 +82,11 @@ async function showInterface(){
     };
 
     if(statusSection == "Your profile"){
-        await handleChatForm(cur_user);
+        await handleProfileForm(cur_user);
+    };
+
+    if(statusSection == "Enter name of new chat"){
+        await handleCreateChatForm();
     };
 
     if(statusSection == "Chat"){
@@ -101,6 +105,8 @@ btn_home.addEventListener('click', () => {
 btn_login.addEventListener('click', ()=>{
     if (isAuthenticated()){
         localStorage.clear();
+        websocket.close();
+        websocket = null;
         section.innerHTML = signupForm;
         showInterface();
         btn_login.textContent = "Log in";
@@ -113,6 +119,30 @@ btn_login.addEventListener('click', ()=>{
 
 
 btn_create.addEventListener('click', ()=>{
+    console.log("We are into Create Chat form")
+    section.innerHTML = createChatForm;
+    const form = document.getElementById('form_signup');
+    btn_home.style.display = "auto";
+    btn_create.style.display = "auto";
+    btn_leave.style.display = "none";
+    btn_del.style.display = "none";
+    btn_profile.style.display = "auto";
+    // console.log(statusSection.id)
+    form.addEventListener('submit', async (event) => {
+        console.log("Move to chat")
+    });  
+    // showInterface();
+
+});
+
+
+function handleCreateChatForm(){
+    console.log("handleCreateChatForm")
+};
+
+
+// Это обработка создания непострественно комнаты чата - должна запускаться сразу после того как станет понятно имя Чата
+function handleConnectToChat(){
     section.innerHTML = chatForm;
     showInterface();
     
@@ -150,7 +180,7 @@ btn_create.addEventListener('click', ()=>{
     websocket.onerror = function(event){
         writeToScreen('<span style="color: red;">ERROR:</span> ' + event.data);
     };
-});
+};
 
 btn_leave.addEventListener('click', ()=>{
     websocket.close();
@@ -163,6 +193,13 @@ async function handleProfileForm(cur_user){
     section.innerHTML="";
     
     await loadChats();
+    btn_home.style.display = "auto";
+    btn_create.style.display = "auto";
+    btn_leave.style.display = "none";
+    btn_del.style.display = "none";
+    btn_profile.style.display = "none";
+
+
 
     section.innerHTML=profileForm;
     btn_login.textContent = cur_user.username + "/logout";
