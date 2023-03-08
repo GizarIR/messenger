@@ -78,19 +78,19 @@ async function showInterface(){
     };
 
     if (statusSection == "Login"){
-        await handleLoginForm();
+        await  handleLoginForm();
     };
 
     if(statusSection == "Your profile"){
-        await handleProfileForm(cur_user);
+        await  handleProfileForm(cur_user);
     };
 
-    if(statusSection == "Enter name of new chat"){
-        await handleCreateChatForm();
-    };
+    // if(statusSection == "Enter name of new chat"){
+    //     await handleCreateChatForm();
+    // };
 
     if(statusSection == "Chat"){
-        await handleChatForm();
+        await  handleChatForm();
     };
 
 };
@@ -105,11 +105,11 @@ btn_home.addEventListener('click', () => {
 btn_login.addEventListener('click', ()=>{
     if (isAuthenticated()){
         localStorage.clear();
-        websocket.close();
-        websocket = null;
+        // websocket.close();
+        // websocket = null;
         section.innerHTML = signupForm;
-        showInterface();
         btn_login.textContent = "Log in";
+        showInterface();
     } else {
         section.innerHTML = loginForm;
         showInterface();
@@ -121,31 +121,42 @@ btn_login.addEventListener('click', ()=>{
 btn_create.addEventListener('click', ()=>{
     console.log("We are into Create Chat form")
     section.innerHTML = createChatForm;
-    const form = document.getElementById('form_signup');
-    btn_home.style.display = "auto";
-    btn_create.style.display = "auto";
-    btn_leave.style.display = "none";
-    btn_del.style.display = "none";
-    btn_profile.style.display = "auto";
+    const form = document.getElementById('form_create_chat');
+
+    btn_home.style.visibility = "visible";
+    btn_create.style.visibility = "visible";
+    btn_leave.style.visibility = "hidden";
+    btn_del.style.visibility = "hidden";
+    btn_profile.style.visibility = "visible";
+
+
     // console.log(statusSection.id)
     form.addEventListener('submit', async (event) => {
-        console.log("Move to chat")
+        event.preventDefault(); //отключаем поведение формы по умолчанию
+        const formData = new FormData(form);
+        const plainFormData = Object.fromEntries(formData.entries());
+	    const formDataJsonString = JSON.stringify(plainFormData); 
+        console.log("formDataJsonString :" + formDataJsonString);
+        handleConnectToChat(plainFormData.chatname);
     });  
-    // showInterface();
-
 });
 
 
-function handleCreateChatForm(){
-    console.log("handleCreateChatForm")
-};
-
-
 // Это обработка создания непострественно комнаты чата - должна запускаться сразу после того как станет понятно имя Чата
-function handleConnectToChat(){
-    section.innerHTML = chatForm;
-    showInterface();
+function handleConnectToChat(chat_name){
     
+    section.innerHTML = chatForm;
+
+    showInterface();
+
+    btn_home.style.visibility = "visible";
+    btn_create.style.visibility = "visible";
+    btn_leave.style.visibility = "visible";
+    btn_del.style.visibility = "visible";
+    btn_profile.style.visibility = "visible";
+
+    document.querySelector("#chat_name").textContent = "Chat's name: " + chat_name;
+
     function writeToScreen(message){
         let pre = document.createElement("p");
         pre.setAttribute("overflow-wrap", "break-word");
@@ -185,6 +196,8 @@ function handleConnectToChat(){
 btn_leave.addEventListener('click', ()=>{
     websocket.close();
     websocket = null;
+    section.innerHTML = profileForm;
+    showInterface();
 });
 
 
@@ -193,13 +206,12 @@ async function handleProfileForm(cur_user){
     section.innerHTML="";
     
     await loadChats();
-    btn_home.style.display = "auto";
-    btn_create.style.display = "auto";
-    btn_leave.style.display = "none";
-    btn_del.style.display = "none";
-    btn_profile.style.display = "none";
 
-
+    btn_home.style.visibility = "visible";
+    btn_create.style.visibility = "visible";
+    btn_leave.style.visibility = "hidden";
+    btn_del.style.visibility = "hidden";
+    btn_profile.style.visibility = "hidden";
 
     section.innerHTML=profileForm;
     btn_login.textContent = cur_user.username + "/logout";
@@ -213,11 +225,12 @@ function handleSignupForm(){
     const form = document.getElementById('form_signup');
 
     
-    btn_home.style.display = "none";
-    btn_create.style.display = "none";
-    btn_leave.style.display = "none";
-    btn_del.style.display = "none";
-    btn_profile.style.display = "none";
+    btn_home.style.visibility = "hidden";
+    btn_create.style.visibility = "hidden";
+    btn_leave.style.visibility = "hidden";
+    btn_del.style.visibility = "hidden";
+    btn_profile.style.visibility = "hidden";
+    
     chatList.innerHTML="";
     
 

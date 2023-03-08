@@ -151,3 +151,8 @@
 .sidebar_li a:hover{
     color: rgb(147, 198, 147);
 }
+
+.label_chat_name{
+    display: flex;
+    color: green;
+}
