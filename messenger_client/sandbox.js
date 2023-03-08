@@ -29,6 +29,8 @@
 //   }
 // fetch('https://picsum.photos/v2/list/?limit=5', options)
 
+// style="display: none;"
+// width: 80px;
 
 
 // Вариант реализации через нейминг

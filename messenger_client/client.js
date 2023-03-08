@@ -13,7 +13,10 @@ const section = document.querySelector('.section')
 const btn_home = document.querySelector('.btn_home'); 
 const btn_login = document.querySelector('.btn_login');
 const btn_create = document.querySelector('.btn_create'); 
-const btn_close = document.querySelector('.btn_close');
+const btn_del = document.querySelector('.btn_del');
+const btn_leave = document.querySelector('.btn_leave');
+const btn_profile = document.querySelector('.btn_profile');
+const sidebar = document.querySelector('.sidebar');
 
 let statusSection;
 
@@ -39,7 +42,7 @@ const loadChats = () => {
         })
         .catch((error) => {
             console.log('error', error)
-        })
+        });
 };
 
 function isAuthenticated(){
@@ -48,26 +51,16 @@ function isAuthenticated(){
 };
 
 
-function showProfileForm(cur_user){
-    section.innerHTML="";
-    section.innerHTML=profileForm;
-    btn_login.textContent = cur_user.username + "/logout";
-    document.forms.form_profile.username.value = cur_user.username;
-    document.forms.form_profile.email.value = cur_user.email;
-};
-
-
 async function initInterface(){
-    await loadChats();
-    section.innerHTML = signupForm;
-    handleSignupForm();
     let cur_user = isAuthenticated();
     if (cur_user){
-        showProfileForm(cur_user);
+        handleProfileForm(cur_user);
+    } else {
+        // sidebar.style.width = "80px";
+        section.innerHTML = signupForm;
+        handleSignupForm();    
     }
-    // const statusSection = document.querySelector("form");
-    statusSection = document.querySelector('.form_h3_status').firstChild.textContent;
-    console.log(statusSection)
+    console.log("Сработало window.onload")
 };
 
 window.onload = initInterface();
@@ -75,27 +68,25 @@ window.onload = initInterface();
 
 async function showInterface(){
     let cur_user = isAuthenticated();
-
-    const resultResponse = await loadChats();
-    console.log('resultResponse', resultResponse)
+    
 
     statusSection = document.querySelector('.form_h3_status').firstChild.textContent;
     console.log(statusSection);
 
     if (statusSection === "Registration"){
-        handleSignupForm();
+        await handleSignupForm();
     };
 
     if (statusSection == "Login"){
-        handleLoginForm();
+        await handleLoginForm();
     };
 
     if(statusSection == "Your profile"){
-        console.log("Here should be handle Submit button Profile form") // TODO - create handler for Submit's button Profile form
-    };//  if(statusSection.id == "form_profile")
+        await handleChatForm(cur_user);
+    };
 
     if(statusSection == "Chat"){
-        handleChatForm();
+        await handleChatForm();
     };
 
 };
@@ -161,15 +152,38 @@ btn_create.addEventListener('click', ()=>{
     };
 });
 
-btn_close.addEventListener('click', ()=>{
+btn_leave.addEventListener('click', ()=>{
     websocket.close();
     websocket = null;
 });
 
 
+async function handleProfileForm(cur_user){
+    console.log('We are into Profile form')
+    section.innerHTML="";
+    
+    await loadChats();
+
+    section.innerHTML=profileForm;
+    btn_login.textContent = cur_user.username + "/logout";
+    document.forms.form_profile.username.value = cur_user.username;
+    document.forms.form_profile.email.value = cur_user.email;
+};
+
+
 function handleSignupForm(){
     console.log('We are into Registration form')
     const form = document.getElementById('form_signup');
+
+    
+    btn_home.style.display = "none";
+    btn_create.style.display = "none";
+    btn_leave.style.display = "none";
+    btn_del.style.display = "none";
+    btn_profile.style.display = "none";
+    chatList.innerHTML="";
+    
+
     // console.log(statusSection.id)
     form.addEventListener('submit', async (event) => {        
         event.preventDefault(); //отключаем поведение формы по умолчанию
@@ -231,7 +245,7 @@ function handleSignupForm(){
 
         // Если получили доступ, то загружаем форму профиля
         if(accessAccept){
-            showProfileForm(newuser);
+            handleProfileForm(newuser);
         }
     }); //addEventListener callback
 };
@@ -308,7 +322,8 @@ function handleLoginForm(){
                     return false
                 });
 
-            showProfileForm(userFromResponse);
+            handleProfileForm(userFromResponse);
+
         };
     });
 };
