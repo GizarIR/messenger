@@ -1,14 +1,15 @@
 import { signupForm, profileForm, chatForm, loginForm, createChatForm} from "./forms.js";
-import { isAuthenticated, createChat, loadChats } from "./utils.js";
+import { isAuthenticated, writeChatToDB, loadChats } from "./utils.js";
 import {
     domain, reqPathChat, reqPathReg, reqPathLogin, reqPathSetUsername,
     chatList, section, btn_home, btn_login, btn_create, btn_del, btn_leave, btn_profile, sidebar,
-    wsUri,
+    wsUri
 } from "./init.js";
 
 let statusSection;
 const lbl_status_connect = document.getElementById('status_connect');
 let websocket;
+let cur_chat
 
 
 async function initInterface(){
@@ -26,21 +27,21 @@ async function initInterface(){
 window.onload = initInterface();
 
 
-async function showInterface(){
+function showInterface(){
     let cur_user = isAuthenticated();
     statusSection = document.querySelector('.form_h3_status').firstChild.textContent;
     console.log(statusSection);
 
     if (statusSection === "Registration"){
-        await handleSignupForm();
+         handleSignupForm();
     };
 
     if (statusSection == "Login"){
-        await  handleLoginForm();
+          handleLoginForm();
     };
 
     if(statusSection == "Your profile"){
-        await  handleProfileForm(cur_user);
+          handleProfileForm(cur_user);
     };
 
     // if(statusSection == "Enter name of new chat"){
@@ -48,7 +49,7 @@ async function showInterface(){
     // };
 
     if(statusSection == "Chat"){
-        await  handleChatForm();
+        handleChatForm();
     };
 };
 
@@ -87,7 +88,7 @@ btn_create.addEventListener('click', ()=>{
     btn_profile.style.visibility = "visible";
 
     // console.log(statusSection.id)
-    form.addEventListener('submit', async (event) => {
+    form.addEventListener('submit', (event) => {
         event.preventDefault(); //отключаем поведение формы по умолчанию
         const formData = new FormData(form);
         const plainFormData = Object.fromEntries(formData.entries());
@@ -109,6 +110,8 @@ function handleConnectToChat(chat_name){
     btn_del.style.visibility = "visible";
     btn_profile.style.visibility = "visible";
 
+    cur_chat = writeChatToDB(chat_name);
+
     document.querySelector("#chat_name").textContent = "Chat's name: " + chat_name;
 
     function writeToScreen(message){
@@ -123,7 +126,7 @@ function handleConnectToChat(chat_name){
 
     // websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/?token=6b50ca89f721f48d8b20b114a347df728399d3b0');
     // websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/');
-    websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/' + chat_name + '/?token=' + user.token);
+    websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/' + cur_chat.id + '/?token=' + user.token);
     // console.log(websocket);
 
     websocket.onopen = function(event){

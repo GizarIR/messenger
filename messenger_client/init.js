@@ -14,4 +14,6 @@ export const btn_leave = document.querySelector('.btn_leave');
 export const btn_profile = document.querySelector('.btn_profile');
 export const sidebar = document.querySelector('.sidebar');
 
-export const wsUri = 'ws://' + window.location.host + '/ws/chat/'
+export const wsUri = 'ws://' + window.location.host + '/ws/chat/';
+// export let cur_chat;
+

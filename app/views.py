@@ -38,7 +38,7 @@ class ChatAPIListView(generics.ListCreateAPIView):
         return queryset
 
 
-# Чтение, изменение, удаление отдельной записи
+# Чтение, изменение отдельной записи
 class ChatAPIUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
