@@ -1,5 +1,5 @@
 import { signupForm, profileForm, chatForm, loginForm, createChatForm} from "./forms.js";
-import { isAuthenticated, writeChatToDB, loadChats } from "./utils.js";
+import { isAuthenticated, writeChatToDB, loadChats, loadChatMembers } from "./utils.js";
 import {
     domain, reqPathChat, reqPathReg, reqPathLogin, reqPathSetUsername,
     chatList, section, btn_home, btn_login, btn_create, btn_del, btn_leave, btn_profile, sidebar,
@@ -8,8 +8,8 @@ import {
 
 let statusSection;
 const lbl_status_connect = document.getElementById('status_connect');
+let cur_chat;
 let websocket;
-let cur_chat
 
 
 async function initInterface(){
@@ -88,19 +88,20 @@ btn_create.addEventListener('click', ()=>{
     btn_profile.style.visibility = "visible";
 
     // console.log(statusSection.id)
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
         event.preventDefault(); //отключаем поведение формы по умолчанию
         const formData = new FormData(form);
         const plainFormData = Object.fromEntries(formData.entries());
 	    const formDataJsonString = JSON.stringify(plainFormData); 
         console.log("formDataJsonString :" + formDataJsonString);
-        handleConnectToChat(plainFormData.chatname);
+        cur_chat = await writeChatToDB(plainFormData.chatname);
+        handleConnectToChat(cur_chat.name);
     });  
 });
 
 
 // Это обработка создания непострественно комнаты чата - должна запускаться сразу после того как станет понятно имя Чата
-function handleConnectToChat(chat_name){
+async function handleConnectToChat(chat_name){
     
     section.innerHTML = chatForm;
     showInterface();
@@ -109,8 +110,6 @@ function handleConnectToChat(chat_name){
     btn_leave.style.visibility = "visible";
     btn_del.style.visibility = "visible";
     btn_profile.style.visibility = "visible";
-
-    cur_chat = writeChatToDB(chat_name);
 
     document.querySelector("#chat_name").textContent = "Chat's name: " + chat_name;
 
@@ -317,7 +316,8 @@ function handleLoginForm(){
                     localStorage.setItem("messenger_user", `{
                         "username": "${dataUser.username}",
                         "token": "${tokenAccept}",
-                        "email": "${dataUser.email}"
+                        "email": "${dataUser.email}",
+                        "id": "${dataUser.id}"
                     }`);
                     return dataUser
                 })
@@ -332,9 +332,13 @@ function handleLoginForm(){
     });
 };
 
-function handleChatForm(){
-    // далее идет обработка функционала Websocket
+async function handleChatForm(){
     console.log('We are into interface of chat');
+    //обработка навигации 
+    chatList.innerHTML="";
+    await loadChatMembers();
+
+    // обработка Чата
     const btn_send = document.getElementById('chat-message-submit');
     const input_message = document.getElementById('chat-message-input');
 
@@ -354,4 +358,5 @@ function handleChatForm(){
         }));
         input_message.value = '';
     };
+
 };

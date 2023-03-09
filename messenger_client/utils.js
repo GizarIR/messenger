@@ -55,49 +55,37 @@ export const loadChats = () => {
 
 export const writeChatToDB = (chat_name) =>{
     console.log("We are into createChat");
-    const token = isAuthenticated().token;
-    const chat = fetch(domain + reqPathReg + "me/", {
-        method: "GET", 
+    const user = isAuthenticated();
+    const body = {
+        "name": chat_name,
+        "is_private": "false",
+        "owner": user.id
+    }
+    console.log("Body: ", body)
+    
+    const fetchOptions = {
+        method: "POST", 
         mode: 'cors', 
         headers: { 
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': 'Token ' + token
-        },})
+            'Authorization': 'Token ' + user.token
+        },
+        body: JSON.stringify(body)
+    }; 
+    const created_chat = fetch(domain + reqPathChat, fetchOptions)
         .then((response)=>{return response.json()})
-        .then((data)=>{
-            console.log("Got User from DB: ", data);
-             // готовим параметры POST запроса
-            const body = {
-                "name": chat_name,
-                "is_private": "false",
-                "owner": data.id
-            }
-            console.log("Body: ", body)
-           
-            const fetchOptions = {
-                method: "POST", 
-                mode: 'cors', 
-                headers: { 
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Token ' + token
-                },
-                body: JSON.stringify(body)
-            }; 
-            const created_chat = fetch(domain + reqPathChat, fetchOptions)
-                .then((response)=>{return response.json()})
-                .then((response_chat)=>{
-                    console.log("Chat created: ", response_chat)
-                    return response_chat
-                })
-                .catch((error)=>{
-                    console.log('An ERROR has occured:', error )
-                })
-            return created_chat;
-            })
-        .catch((error) => {
-            console.log('error', error)
-        });
-    return chat
+        .then((response_chat)=>{
+            console.log("Chat created: ", response_chat)
+            return response_chat
+        })
+        .catch((error)=>{
+            console.log('An ERROR has occured:', error )
+        })
+    return created_chat
+};
+
+export function loadChatMembers(){
+    console.log("We are into loadChatMembers");
+    loadChats() //заглушка - здесь должен быть фетч и обработка списка пользователей
 };
