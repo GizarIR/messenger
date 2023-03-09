@@ -21,5 +21,5 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ChatParticipantSerialaizer(serializers.ModelSerializer):
     class Meta:
-        model = ChatParticipant
-        fields = ('chat', 'participant')
+        model = User
+        fields = ("username",)

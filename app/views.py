@@ -66,11 +66,12 @@ class UserAPIUpdateView(generics.UpdateAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
 class ChatParticipantAPIUpdateView(generics.ListCreateAPIView):
-    queryset = ChatParticipant.objects.all()
+    queryset = User.objects.all()
     serializer_class = ChatParticipantSerialaizer
 
     def get_queryset(self):
         chat_id = self.kwargs["pk"]
         print("Queried Chat Participants fro CHAT:", chat_id)
-        queryset = ChatParticipant.objects.filter(chat=chat_id)
+        # queryset = ChatParticipant.objects.filter(chat=chat_id)
+        queryset = User.objects.filter(pk__in=ChatParticipant.objects.filter(chat=chat_id))
         return queryset
