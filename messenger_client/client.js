@@ -1,54 +1,14 @@
 import { signupForm, profileForm, chatForm, loginForm, createChatForm} from "./forms.js";
-
-const domain = 'http://127.0.0.1:8000/';
-const reqPathChat = 'api/v1/chat/';
-const reqPathReg = 'api/v1/auth/users/';
-const reqPathLogin = 'auth/token/login/';
-const reqPathSetUsername = 'api/v1/auth/users/set_username/';
-
-
-
-const chatList = document.querySelector('.list_chat');
-const section = document.querySelector('.section')
-const btn_home = document.querySelector('.btn_home'); 
-const btn_login = document.querySelector('.btn_login');
-const btn_create = document.querySelector('.btn_create'); 
-const btn_del = document.querySelector('.btn_del');
-const btn_leave = document.querySelector('.btn_leave');
-const btn_profile = document.querySelector('.btn_profile');
-const sidebar = document.querySelector('.sidebar');
+import { isAuthenticated, createChat, loadChats } from "./utils.js";
+import {
+    domain, reqPathChat, reqPathReg, reqPathLogin, reqPathSetUsername,
+    chatList, section, btn_home, btn_login, btn_create, btn_del, btn_leave, btn_profile, sidebar,
+    wsUri,
+} from "./init.js";
 
 let statusSection;
-
 const lbl_status_connect = document.getElementById('status_connect');
-const wsUri = 'ws://' + window.location.host + '/ws/chat/'
 let websocket;
-
-const loadChats = () => {
-    chatList.innerHTML = "";
-    return fetch(domain + reqPathChat)
-        .then((response) => {return response.json()})
-        .then((data) => {
-            // console.log('My json chats:' , data)
-            for (const chat of data){
-                const listItem = document.createElement('li');
-                listItem.setAttribute("class", "sidebar_li");
-                // listItem.append(chat.name);
-                let fullWsUri = `${wsUri} + 'chat_' + ${chat.id} + '/'`;
-                listItem.innerHTML = `<a href=${fullWsUri} id="btn_sb_${chat.id}">${chat.name}</a>`
-                chatList.appendChild(listItem);
-            }
-            return data
-        })
-        .catch((error) => {
-            console.log('error', error)
-        });
-};
-
-function isAuthenticated(){
-    let user = JSON.parse(localStorage.getItem('messenger_user'));
-    return  user ? user : false
-};
 
 
 async function initInterface(){
@@ -68,8 +28,6 @@ window.onload = initInterface();
 
 async function showInterface(){
     let cur_user = isAuthenticated();
-    
-
     statusSection = document.querySelector('.form_h3_status').firstChild.textContent;
     console.log(statusSection);
 
@@ -92,7 +50,6 @@ async function showInterface(){
     if(statusSection == "Chat"){
         await  handleChatForm();
     };
-
 };
 
 
@@ -129,7 +86,6 @@ btn_create.addEventListener('click', ()=>{
     btn_del.style.visibility = "hidden";
     btn_profile.style.visibility = "visible";
 
-
     // console.log(statusSection.id)
     form.addEventListener('submit', async (event) => {
         event.preventDefault(); //отключаем поведение формы по умолчанию
@@ -146,9 +102,7 @@ btn_create.addEventListener('click', ()=>{
 function handleConnectToChat(chat_name){
     
     section.innerHTML = chatForm;
-
     showInterface();
-
     btn_home.style.visibility = "visible";
     btn_create.style.visibility = "visible";
     btn_leave.style.visibility = "visible";
@@ -169,7 +123,7 @@ function handleConnectToChat(chat_name){
 
     // websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/?token=6b50ca89f721f48d8b20b114a347df728399d3b0');
     // websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/');
-    websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/?token=' + user.token);
+    websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/' + chat_name + '/?token=' + user.token);
     // console.log(websocket);
 
     websocket.onopen = function(event){
@@ -192,6 +146,7 @@ function handleConnectToChat(chat_name){
         writeToScreen('<span style="color: red;">ERROR:</span> ' + event.data);
     };
 };
+
 
 btn_leave.addEventListener('click', ()=>{
     websocket.close();
@@ -223,17 +178,13 @@ async function handleProfileForm(cur_user){
 function handleSignupForm(){
     console.log('We are into Registration form')
     const form = document.getElementById('form_signup');
-
-    
     btn_home.style.visibility = "hidden";
     btn_create.style.visibility = "hidden";
     btn_leave.style.visibility = "hidden";
     btn_del.style.visibility = "hidden";
-    btn_profile.style.visibility = "hidden";
-    
+    btn_profile.style.visibility = "hidden"; 
     chatList.innerHTML="";
     
-
     // console.log(statusSection.id)
     form.addEventListener('submit', async (event) => {        
         event.preventDefault(); //отключаем поведение формы по умолчанию
@@ -384,9 +335,6 @@ function handleChatForm(){
     const btn_send = document.getElementById('chat-message-submit');
     const input_message = document.getElementById('chat-message-input');
 
-    // const wsUri = 'ws://' + window.location.host + '/ws/chat/' + 'lobby/'
-
-
     input_message.focus();
     input_message.onkeyup = function(e){
         // console.log('Kere code', e.code );
@@ -403,5 +351,4 @@ function handleChatForm(){
         }));
         input_message.value = '';
     };
-
 };
