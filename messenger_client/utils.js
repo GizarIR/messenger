@@ -52,7 +52,6 @@ export const loadChats = () => {
 };
 
 
-
 export const writeChatToDB = (chat_name) =>{
     console.log("We are into createChat");
     const user = isAuthenticated();
@@ -85,7 +84,24 @@ export const writeChatToDB = (chat_name) =>{
     return created_chat
 };
 
-export function loadChatMembers(){
+export function loadChatMembers(cur_chat){
     console.log("We are into loadChatMembers");
-    loadChats() //заглушка - здесь должен быть фетч и обработка списка пользователей
+    
+    return fetch(domain + reqPathChat + cur_chat.id + '/participant/')
+        .then((response) => {return response.json()})
+        .then((data) => {
+            console.log('My json Members:' , data)
+            for (const member of data){
+                const listItem = document.createElement('li');
+                listItem.setAttribute("class", "sidebar_li");
+                // listItem.append(chat.name);
+                let fullWsUri = "#";
+                listItem.innerHTML = `<a href=${fullWsUri} id="btn_sb_${member.participant}">${member.participant}</a>`
+                chatList.appendChild(listItem);
+            }
+            return data
+        })
+        .catch((error) => {
+            console.log('error', error)
+        });
 };

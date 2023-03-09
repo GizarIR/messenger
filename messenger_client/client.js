@@ -336,7 +336,7 @@ async function handleChatForm(){
     console.log('We are into interface of chat');
     //обработка навигации 
     chatList.innerHTML="";
-    await loadChatMembers();
+    await loadChatMembers(cur_chat);
 
     // обработка Чата
     const btn_send = document.getElementById('chat-message-submit');

@@ -33,6 +33,11 @@
 // width: 80px;
 
 
+// $ redis-cli
+// 127.0.0.1:6379> shutdown
+// not connected> quit
+
+
 // Вариант реализации через нейминг
 // document.forms.form_signup.onsubmit = function() {
 //     let Myusername = this.input_name.value;
