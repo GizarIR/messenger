@@ -73,5 +73,5 @@ class ChatParticipantAPIUpdateView(generics.ListCreateAPIView):
         chat_id = self.kwargs["pk"]
         print("Queried Chat Participants fro CHAT:", chat_id)
         # queryset = ChatParticipant.objects.filter(chat=chat_id)
-        queryset = User.objects.filter(pk__in=ChatParticipant.objects.filter(chat=chat_id))
+        queryset = User.objects.filter(pk__in=ChatParticipant.objects.filter(chat=chat_id).values("participant"))
         return queryset

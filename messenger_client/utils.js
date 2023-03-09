@@ -86,8 +86,9 @@ export const writeChatToDB = (chat_name) =>{
 
 export function loadChatMembers(cur_chat){
     console.log("We are into loadChatMembers");
-    
+    console.log("CHAT_ID", cur_chat.id)
     return fetch(domain + reqPathChat + cur_chat.id + '/participant/')
+    // return fetch(domain + reqPathChat + '1' + '/participant/')
         .then((response) => {return response.json()})
         .then((data) => {
             console.log('My json Members:' , data)
@@ -96,7 +97,7 @@ export function loadChatMembers(cur_chat){
                 listItem.setAttribute("class", "sidebar_li");
                 // listItem.append(chat.name);
                 let fullWsUri = "#";
-                listItem.innerHTML = `<a href=${fullWsUri} id="btn_sb_${member.participant}">${member.participant}</a>`
+                listItem.innerHTML = `<a href=${fullWsUri} id="btn_sb_${member.username}">${member.username}</a>`
                 chatList.appendChild(listItem);
             }
             return data

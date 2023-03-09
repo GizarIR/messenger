@@ -335,9 +335,6 @@ function handleLoginForm(){
 async function handleChatForm(){
     console.log('We are into interface of chat');
     //обработка навигации 
-    chatList.innerHTML="";
-    await loadChatMembers(cur_chat);
-
     // обработка Чата
     const btn_send = document.getElementById('chat-message-submit');
     const input_message = document.getElementById('chat-message-input');
@@ -358,5 +355,8 @@ async function handleChatForm(){
         }));
         input_message.value = '';
     };
+
+    chatList.innerHTML="";
+    await loadChatMembers(cur_chat);
 
 };
