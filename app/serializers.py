@@ -19,7 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username', 'first_name', 'avatar', 'email')
 
-class ChatParticipant(serializers.ModelSerializer):
+class ChatParticipantSerialaizer(serializers.ModelSerializer):
     class Meta:
         model = ChatParticipant
         fields = ('chat', 'participant')

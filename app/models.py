@@ -34,7 +34,7 @@ class Chat(models.Model):
 
 class ChatParticipant(models.Model):
     chat = models.ForeignKey('Chat', on_delete=models.CASCADE, verbose_name="Чат")
-    participant = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name="Автор")
+    participant = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name="Участник")
 
     def __str__(self):
         return f'{self.chat} - {self.participant}'

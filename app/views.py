@@ -7,7 +7,7 @@ from rest_framework import generics, request, viewsets, mixins, permissions
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from .models import Chat, User, ChatParticipant
-from .serializers import ChatSerializer, UserSerializer
+from .serializers import ChatSerializer, UserSerializer, ChatParticipantSerialaizer
 
 from django.contrib.auth.models import AnonymousUser
 from rest_framework.authtoken.models import Token
@@ -65,3 +65,12 @@ class UserAPIUpdateView(generics.UpdateAPIView):
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
+class ChatParticipantAPIUpdateView(generics.ListCreateAPIView):
+    queryset = ChatParticipant.objects.all()
+    serializer_class = ChatParticipantSerialaizer
+
+    def get_queryset(self):
+        chat_id = self.kwargs["pk"]
+        print("Queried Chat Participants fro CHAT:", chat_id)
+        queryset = ChatParticipant.objects.filter(chat=chat_id)
+        return queryset
