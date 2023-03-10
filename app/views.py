@@ -7,7 +7,8 @@ from rest_framework import generics, request, viewsets, mixins, permissions
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from .models import Chat, User, ChatParticipant
-from .serializers import ChatSerializer, UserSerializer, ChatParticipantSerialaizer
+from .serializers import ChatSerializer, UserSerializer, \
+    ChatParticipantListSerialaizer, ChatParticipantSerialaizer
 
 from django.contrib.auth.models import AnonymousUser
 from rest_framework.authtoken.models import Token
@@ -65,9 +66,9 @@ class UserAPIUpdateView(generics.UpdateAPIView):
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
-class ChatParticipantAPIUpdateView(generics.ListCreateAPIView):
+class ChatParticipantAPIListView(generics.ListAPIView):
     queryset = User.objects.all()
-    serializer_class = ChatParticipantSerialaizer
+    serializer_class = ChatParticipantListSerialaizer
 
     def get_queryset(self):
         chat_id = self.kwargs["pk"]
@@ -75,3 +76,29 @@ class ChatParticipantAPIUpdateView(generics.ListCreateAPIView):
         # queryset = ChatParticipant.objects.filter(chat=chat_id)
         queryset = User.objects.filter(pk__in=ChatParticipant.objects.filter(chat=chat_id).values("participant"))
         return queryset
+
+
+class ChatParticipantAPICreateView(generics.CreateAPIView):
+    queryset = ChatParticipant.objects.all()
+    serializer_class = ChatParticipantSerialaizer
+    permission_classes = (IsAuthenticated,)
+
+class ChatParticipantAPIRetrieveDestroyView(generics.RetrieveDestroyAPIView):
+    queryset = ChatParticipant.objects.all()
+    serializer_class = ChatParticipantSerialaizer
+    permission_classes = (IsAuthenticated,)
+
+    # Ищем объект не по ID а по другим  параметрам полей
+    def get_object(self):
+        queryset = self.get_queryset()
+        chat_id = self.kwargs["chat_pk"]
+        participant_id = self.kwargs["participant_pk"]
+        # queryset = ChatParticipant.objects.filter(chat=chat_id)
+        obj = queryset.filter(chat_id=chat_id, participant_id=participant_id).first()
+        return obj
+
+
+# class ChatParticipantAPIDestroyView(generics.DestroyAPIView):
+#     queryset = ChatParticipant.objects.all()
+#     serializer_class = ChatParticipantSerialaizer
+#     permission_classes = (IsAuthenticated,)

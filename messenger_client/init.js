@@ -1,5 +1,6 @@
 export const domain = 'http://127.0.0.1:8000/';
 export const reqPathChat = 'api/v1/chat/';
+export const reqPathChatParticipant = 'api/v1/chat/participant/';
 export const reqPathReg = 'api/v1/auth/users/';
 export const reqPathLogin = 'auth/token/login/';
 export const reqPathSetUsername = 'api/v1/auth/users/set_username/';

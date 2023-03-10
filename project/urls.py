@@ -21,7 +21,9 @@ from app.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/chat/', ChatAPIListView.as_view()),
-    path('api/v1/chat/<int:pk>/participant/', ChatParticipantAPIUpdateView.as_view()),
+    path('api/v1/chat/participant/', ChatParticipantAPICreateView.as_view()),
+    path('api/v1/chat/<int:chat_pk>/participant/<int:participant_pk>/', ChatParticipantAPIRetrieveDestroyView.as_view()),
+    path('api/v1/chat/<int:pk>/participant/', ChatParticipantAPIListView.as_view()),
     path('api/v1/chat/<int:pk>/', ChatAPIUpdateView.as_view()),
     path('api/v1/chat/<int:pk>/delete/', ChatAPIDestroyView.as_view()),
     path('api/v1/user/<int:pk>/update/', UserAPIUpdateView.as_view()),

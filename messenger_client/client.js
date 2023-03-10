@@ -1,5 +1,8 @@
 import { signupForm, profileForm, chatForm, loginForm, createChatForm} from "./forms.js";
-import { isAuthenticated, writeChatToDB, getChatFromDB, loadChats, loadChatMembers, delChatInDB } from "./utils.js";
+import { 
+    isAuthenticated, writeChatToDB, getChatFromDB, loadChats, loadChatMembers, delChatInDB , 
+    addParticipantToChatDB
+} from "./utils.js";
 import {
     domain, reqPathChat, reqPathReg, reqPathLogin, reqPathSetUsername,
     chatList, section, btn_home, btn_login, btn_create, btn_del, btn_leave, btn_profile, sidebar,
@@ -202,6 +205,8 @@ function addHandleToBtnChat(){
             const chat_id = chatList.children[i].firstChild.id.match(/\d/g).join('')
             console.log('Found chatID: ', chat_id);
             cur_chat = await getChatFromDB(chat_id);
+            const user = isAuthenticated();
+            await addParticipantToChatDB(user, cur_chat); //TODO here need to finish!!!
             handleConnectToChat(cur_chat.name);
         });
     };
@@ -408,6 +413,6 @@ async function handleChatForm(){
     };
 
     chatList.innerHTML="";
-    await loadChatMembers(cur_chat);
+    loadChatMembers(cur_chat);
 
 };

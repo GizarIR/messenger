@@ -1,5 +1,5 @@
 import {
-    domain, reqPathChat, reqPathReg, reqPathLogin, reqPathSetUsername,
+    domain, reqPathChat, reqPathReg, reqPathLogin, reqPathSetUsername, reqPathChatParticipant,
     chatList, section, btn_home, btn_login, btn_create, btn_del, btn_leave, btn_profile, sidebar,
     wsUri
 } from "./init.js";
@@ -136,6 +136,42 @@ export function loadChatMembers(cur_chat){
             console.log('error', error)
         });
 };
+
+
+export function addParticipantToChatDB(user, cur_chat){
+    console.log("We are into func addParticipantToChatDB");
+    const body = {
+        "chat": cur_chat.id,
+        "participant": user.id
+    }
+    
+    // console.log("Body: ", body)
+    
+    const fetchOptions = {
+        method: "POST", 
+        mode: 'cors', 
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + user.token
+        },
+        body: JSON.stringify(body)
+    }; 
+
+    const status_operation = fetch(domain + reqPathChatParticipant, fetchOptions)
+        .then((response)=>{return response.json()})
+        .then((data)=>{
+            console.log("ChatParticipant created: ", data)
+            return data.status
+        })
+        .catch((error)=>{
+            console.log('ChatParticipant did\'t create, an ERROR has occured:', error )
+            return error.status
+        })
+    return status_operation
+};    
+
+
 
 export function delChatInDB(chat){
     console.log("We will delete chat....", chat)
