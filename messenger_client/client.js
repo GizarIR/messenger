@@ -1,5 +1,5 @@
 import { signupForm, profileForm, chatForm, loginForm, createChatForm} from "./forms.js";
-import { isAuthenticated, writeChatToDB, loadChats, loadChatMembers } from "./utils.js";
+import { isAuthenticated, writeChatToDB, loadChats, loadChatMembers, delChatInDB } from "./utils.js";
 import {
     domain, reqPathChat, reqPathReg, reqPathLogin, reqPathSetUsername,
     chatList, section, btn_home, btn_login, btn_create, btn_del, btn_leave, btn_profile, sidebar,
@@ -55,6 +55,32 @@ function showInterface(){
 
 
 btn_home.addEventListener('click', () => {
+    if (websocket){
+        const user = isAuthenticated();
+        websocket.send(JSON.stringify({
+            "message": `User: ${user.username} leaved chat...`
+        }));
+        websocket.close();
+        websocket = null;
+        websocket.close();
+        websocket = null;
+    };
+    section.innerHTML = profileForm;
+    showInterface();
+});
+
+
+btn_profile.addEventListener('click', () => {
+    if (websocket){
+        const user = isAuthenticated();
+        websocket.send(JSON.stringify({
+            "message": `User: ${user.username} leaved chat...`
+        }));
+        websocket.close();
+        websocket = null;
+        websocket.close();
+        websocket = null;
+    };
     section.innerHTML = profileForm;
     showInterface();
 });
@@ -97,6 +123,32 @@ btn_create.addEventListener('click', ()=>{
         cur_chat = await writeChatToDB(plainFormData.chatname);
         handleConnectToChat(cur_chat.name);
     });  
+});
+
+
+btn_del.addEventListener('click', async (event)=>{
+    // console.log("We are deleting chat....", cur_chat)
+    websocket.send(JSON.stringify({
+        'message': `Message for all. Owner deleted chat...`
+    }));
+    const status_del = await delChatInDB(cur_chat);
+    console.log("Status deleting: ", status_del)
+    websocket.close();
+    websocket = null;
+    section.innerHTML = profileForm;
+    showInterface();
+}); 
+
+
+btn_leave.addEventListener('click', ()=>{
+    const user = isAuthenticated();
+    websocket.send(JSON.stringify({
+        "message": `User: ${user.username} leaved chat...`
+    }));
+    websocket.close();
+    websocket = null;
+    section.innerHTML = profileForm;
+    showInterface();
 });
 
 
@@ -149,13 +201,6 @@ async function handleConnectToChat(chat_name){
     };
 };
 
-
-btn_leave.addEventListener('click', ()=>{
-    websocket.close();
-    websocket = null;
-    section.innerHTML = profileForm;
-    showInterface();
-});
 
 
 async function handleProfileForm(cur_user){

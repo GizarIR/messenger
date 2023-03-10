@@ -106,3 +106,28 @@ export function loadChatMembers(cur_chat){
             console.log('error', error)
         });
 };
+
+export function delChatInDB(chat){
+    console.log("We will delete chat....", chat)
+    const user = isAuthenticated();
+    const fetchOptions = {
+        method: "DELETE", 
+        mode: 'cors', 
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + user.token
+        },
+    }; 
+
+    const status_del = fetch(domain + reqPathChat + chat.id + '/delete/', fetchOptions)
+        .then((response)=>{
+            // console.log("Status delete chat into FUNC:", response.status )
+            return response.status
+        })
+        .catch((error) => {
+            console.log('Occiried error when attempt to delete CHAT', error)
+        });
+
+    return status_del
+};
