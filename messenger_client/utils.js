@@ -30,6 +30,7 @@ export function getUserDB(token){
         })
 };
 
+
 export const loadChats = () => {
     chatList.innerHTML = "";
     return fetch(domain + reqPathChat)
@@ -40,8 +41,9 @@ export const loadChats = () => {
                 const listItem = document.createElement('li');
                 listItem.setAttribute("class", "sidebar_li");
                 // listItem.append(chat.name);
-                let fullWsUri = `${wsUri}chat_${chat.id}'/'`;
-                listItem.innerHTML = `<a href=${fullWsUri} id="btn_sb_${chat.id}">${chat.name}</a>`
+                // let fullWsUri = `${wsUri}chat_${chat.id}'/'`;
+                let fullWsUri = "#";
+                listItem.innerHTML = `<a href=${fullWsUri} id="btn_chat_${chat.id}">${chat.name}</a>`
                 chatList.appendChild(listItem);
             }
             return data
@@ -83,6 +85,34 @@ export const writeChatToDB = (chat_name) =>{
         })
     return created_chat
 };
+
+
+export const getChatFromDB = (chat_id) =>{
+    console.log("We are into getChatFromDB");
+    const user = isAuthenticated();
+    
+    const fetchOptions = {
+        method: "GET", 
+        mode: 'cors', 
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + user.token
+        },
+    }; 
+
+    const chat = fetch(domain + reqPathChat + chat_id + "/", fetchOptions)
+        .then((response)=>{return response.json()})
+        .then((response_chat)=>{
+            console.log("Chat found: ", response_chat)
+            return response_chat
+        })
+        .catch((error)=>{
+            console.log('Chat NOT found, an ERROR has occured:', error )
+        })
+    return chat
+};
+
 
 export function loadChatMembers(cur_chat){
     console.log("We are into loadChatMembers");

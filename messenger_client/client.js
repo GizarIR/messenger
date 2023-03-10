@@ -1,5 +1,5 @@
 import { signupForm, profileForm, chatForm, loginForm, createChatForm} from "./forms.js";
-import { isAuthenticated, writeChatToDB, loadChats, loadChatMembers, delChatInDB } from "./utils.js";
+import { isAuthenticated, writeChatToDB, getChatFromDB, loadChats, loadChatMembers, delChatInDB } from "./utils.js";
 import {
     domain, reqPathChat, reqPathReg, reqPathLogin, reqPathSetUsername,
     chatList, section, btn_home, btn_login, btn_create, btn_del, btn_leave, btn_profile, sidebar,
@@ -62,8 +62,6 @@ btn_home.addEventListener('click', () => {
         }));
         websocket.close();
         websocket = null;
-        websocket.close();
-        websocket = null;
     };
     section.innerHTML = profileForm;
     showInterface();
@@ -76,8 +74,6 @@ btn_profile.addEventListener('click', () => {
         websocket.send(JSON.stringify({
             "message": `User: ${user.username} leaved chat...`
         }));
-        websocket.close();
-        websocket = null;
         websocket.close();
         websocket = null;
     };
@@ -175,10 +171,8 @@ async function handleConnectToChat(chat_name){
     const user = JSON.parse(localStorage.getItem("messenger_user"));
     console.log('GOT TOKEN FOR WEBSOCKET: ' + user.token)
 
-    // websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/?token=6b50ca89f721f48d8b20b114a347df728399d3b0');
-    // websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/');
+
     websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/' + cur_chat.id + '/?token=' + user.token);
-    // console.log(websocket);
 
     websocket.onopen = function(event){
         lbl_status_connect.setAttribute("color","green");
@@ -202,12 +196,24 @@ async function handleConnectToChat(chat_name){
 };
 
 
+function addHandleToBtnChat(){
+    for (let i = 0; i < chatList.children.length; i++){
+        chatList.children[i].addEventListener('click',async ()=>{
+            const chat_id = chatList.children[i].firstChild.id.match(/\d/g).join('')
+            console.log('Found chatID: ', chat_id);
+            cur_chat = await getChatFromDB(chat_id);
+            handleConnectToChat(cur_chat.name);
+        });
+    };
+};
+
 
 async function handleProfileForm(cur_user){
     console.log('We are into Profile form')
     section.innerHTML="";
     
     await loadChats();
+    await addHandleToBtnChat();
 
     btn_home.style.visibility = "visible";
     btn_create.style.visibility = "visible";
