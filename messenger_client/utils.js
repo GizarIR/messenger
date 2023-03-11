@@ -175,7 +175,7 @@ export function addParticipantToChatDB(user, cur_chat){
 
 
 
-export function delChatInDB(chat){
+export async function delChatInDB(chat){
     console.log("We will delete chat....", chat)
     const user = isAuthenticated();
     const fetchOptions = {
@@ -188,7 +188,7 @@ export function delChatInDB(chat){
         },
     }; 
 
-    const status_del = fetch(domain + reqPathChat + chat.id + '/delete/', fetchOptions)
+    const status_del = await fetch(domain + reqPathChat + chat.id + '/delete/', fetchOptions)
         .then((response)=>{
             // console.log("Status delete chat into FUNC:", response.status )
             return response.status
@@ -203,8 +203,8 @@ export function delChatInDB(chat){
 // fetch(domain + reqPathChat + chat.id + '/participant/' + user)
 
 
-export function isParticipant(user, chat){ 
-    console.log("We are into isParticipant", user, chat);
+export async function isParticipant(user, chat){ 
+    console.log("We are into isParticipant", user.id, chat.id);
     const fetchOptions = {
         method: "GET", 
         mode: 'cors', 
@@ -215,7 +215,7 @@ export function isParticipant(user, chat){
         },
     }; 
 
-    const is_participate = fetch(domain + reqPathChat + chat.id + '/participant/' + user.id, fetchOptions)
+    const is_participant = await fetch(domain + reqPathChat + chat.id + '/participant/' + user.id, fetchOptions)
         .then((response)=>{return response.json()})
         .then((data)=>{
             console.log("isParticipant RESULT: ", data)
@@ -225,5 +225,6 @@ export function isParticipant(user, chat){
             console.log('In function isParticipate, an ERROR has occured:', error )
             return error
         })
-    return is_participate ? true : false
+    // console.log("is_participant HERE: " , is_participant)
+    return is_participant ? true : false
 };

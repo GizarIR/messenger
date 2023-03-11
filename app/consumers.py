@@ -23,8 +23,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
         await self.accept()
+        
+
+        await self.channel_layer.group_send(
+            self.chat_group_name,
+            {
+                'type': 'chat_message', # имя функции описанной ниже
+                'message': "User: " + self.scope["user"].username + " online..."
+            }
+        )
 
     async def disconnect(self, close_code):
+        await self.channel_layer.group_send(
+            self.chat_group_name,
+            {
+                'type': 'chat_message', # имя функции описанной ниже
+                'message': "User: " + self.scope["user"].username + " offline..."
+            }
+        )        
         await self.channel_layer.group_discard(
             self.chat_group_name,
             self.channel_name

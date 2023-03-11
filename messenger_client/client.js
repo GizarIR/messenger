@@ -13,6 +13,7 @@ let statusSection;
 const lbl_status_connect = document.getElementById('status_connect');
 let cur_chat;
 let websocket;
+let new_user;
 
 
 async function initInterface(){
@@ -206,9 +207,11 @@ function addHandleToBtnChat(){
             console.log('Found chatID: ', chat_id);
             cur_chat = await getChatFromDB(chat_id);
             const user = isAuthenticated();
-            const is_participant = await isParticipant(user, cur_chat)
+            let is_participant = await isParticipant(user, cur_chat)
+            console.log("is_participant HERE: ", is_participant)
             if (!is_participant){
                 await addParticipantToChatDB(user, cur_chat);
+                new_user = true;
             }
             handleConnectToChat(cur_chat.name);
         });
@@ -393,8 +396,7 @@ function handleLoginForm(){
 
 async function handleChatForm(){
     console.log('We are into interface of chat');
-    //обработка навигации 
-    // обработка Чата
+
     const btn_send = document.getElementById('chat-message-submit');
     const input_message = document.getElementById('chat-message-input');
 
@@ -408,14 +410,16 @@ async function handleChatForm(){
     
     btn_send.onclick = function(event){
         const message = input_message.value;
-        // console.log(message)
         websocket.send(JSON.stringify({
             'message': message
         }));
         input_message.value = '';
+        chatList.innerHTML="";
+        loadChatMembers(cur_chat);
     };
 
     chatList.innerHTML="";
     loadChatMembers(cur_chat);
+    console.log("NEW_USER: ", new_user )
 
 };
