@@ -228,3 +228,28 @@ export async function isParticipant(user, chat){
     // console.log("is_participant HERE: " , is_participant)
     return is_participant ? true : false
 };
+
+export async function delChatPArticipantInDB(chat){
+    console.log("We will delete ChatPArticipanteDel....", chat)
+    const user = isAuthenticated();
+    const fetchOptions = {
+        method: "DELETE", 
+        mode: 'cors', 
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + user.token
+        },
+    }; 
+
+    const status_del = await fetch(domain + reqPathChat + chat.id + '/participant/' +  user.id, fetchOptions)
+        .then((response)=>{
+            // console.log("Status delete ChatParticipant into FUNC:", response.status )
+            return response.status
+        })
+        .catch((error) => {
+            console.log('Occiried error when attempt to delete ChatParticiant', error)
+        });
+
+    return status_del
+};

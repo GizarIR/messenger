@@ -1,7 +1,7 @@
 import { signupForm, profileForm, chatForm, loginForm, createChatForm} from "./forms.js";
 import { 
     isAuthenticated, writeChatToDB, getChatFromDB, loadChats, loadChatMembers, delChatInDB , 
-    addParticipantToChatDB, isParticipant
+    addParticipantToChatDB, isParticipant, delChatPArticipantInDB 
 } from "./utils.js";
 import {
     domain, reqPathChat, reqPathReg, reqPathLogin, reqPathSetUsername,
@@ -140,11 +140,12 @@ btn_del.addEventListener('click', async (event)=>{
 }); 
 
 
-btn_leave.addEventListener('click', ()=>{
-    const user = isAuthenticated();
+btn_leave.addEventListener('click', async ()=>{
+    const user = await isAuthenticated();
     websocket.send(JSON.stringify({
         "message": `User: ${user.username} leaved chat...`
     }));
+    await delChatPArticipantInDB(cur_chat);
     websocket.close();
     websocket = null;
     section.innerHTML = profileForm;
