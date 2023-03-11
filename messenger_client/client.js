@@ -151,7 +151,6 @@ btn_leave.addEventListener('click', async ()=>{
 });
 
 
-// Это обработка создания непострественно комнаты чата - должна запускаться сразу после того как станет понятно имя Чата
 async function handleConnectToChat(chat_name){
     const user = JSON.parse(localStorage.getItem("messenger_user"));
 
@@ -216,7 +215,6 @@ function addHandleToBtnChat(){
             console.log("is_participant HERE: ", is_participant)
             if (!is_participant){
                 await addParticipantToChatDB(user, cur_chat);
-                new_user = true;
             }
             handleConnectToChat(cur_chat.name);
         });
@@ -399,6 +397,7 @@ function handleLoginForm(){
     });
 };
 
+
 async function handleChatForm(){
     console.log('We are into interface of chat');
 
@@ -421,10 +420,10 @@ async function handleChatForm(){
         input_message.value = '';
         chatList.innerHTML="";
         loadChatMembers(cur_chat);
+        addHandleToBtnParticipant();
     };
 
     chatList.innerHTML="";
-    loadChatMembers(cur_chat);
-    console.log("NEW_USER: ", new_user )
+    await loadChatMembers(cur_chat);
 
 };
