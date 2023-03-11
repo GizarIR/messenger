@@ -1,7 +1,7 @@
 import { signupForm, profileForm, chatForm, loginForm, createChatForm} from "./forms.js";
 import { 
     isAuthenticated, writeChatToDB, getChatFromDB, loadChats, loadChatMembers, delChatInDB , 
-    addParticipantToChatDB
+    addParticipantToChatDB, isParticipant
 } from "./utils.js";
 import {
     domain, reqPathChat, reqPathReg, reqPathLogin, reqPathSetUsername,
@@ -206,7 +206,10 @@ function addHandleToBtnChat(){
             console.log('Found chatID: ', chat_id);
             cur_chat = await getChatFromDB(chat_id);
             const user = isAuthenticated();
-            await addParticipantToChatDB(user, cur_chat); //TODO here need to finish!!!
+            const is_participant = await isParticipant(user, cur_chat)
+            if (!is_participant){
+                await addParticipantToChatDB(user, cur_chat);
+            }
             handleConnectToChat(cur_chat.name);
         });
     };

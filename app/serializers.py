@@ -27,4 +27,4 @@ class ChatParticipantListSerialaizer(serializers.ModelSerializer):
 class ChatParticipantSerialaizer(serializers.ModelSerializer):
     class Meta:
         model = ChatParticipant
-        fields = ('id', 'chat_id', 'participant_id')
+        fields = ("__all__")

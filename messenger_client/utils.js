@@ -114,7 +114,7 @@ export const getChatFromDB = (chat_id) =>{
 };
 
 
-export function loadChatMembers(cur_chat){
+export function loadChatMembers(cur_chat, render=true){
     console.log("We are into loadChatMembers");
     console.log("CHAT_ID", cur_chat.id)
     return fetch(domain + reqPathChat + cur_chat.id + '/participant/')
@@ -122,13 +122,15 @@ export function loadChatMembers(cur_chat){
         .then((response) => {return response.json()})
         .then((data) => {
             console.log('My json Members:' , data)
-            for (const member of data){
-                const listItem = document.createElement('li');
-                listItem.setAttribute("class", "sidebar_li");
-                // listItem.append(chat.name);
-                let fullWsUri = "#";
-                listItem.innerHTML = `<a href=${fullWsUri} id="btn_sb_${member.username}">${member.username}</a>`
-                chatList.appendChild(listItem);
+            if (render){
+                for (const member of data){
+                    const listItem = document.createElement('li');
+                    listItem.setAttribute("class", "sidebar_li");
+                    // listItem.append(chat.name);
+                    let fullWsUri = "#";
+                    listItem.innerHTML = `<a href=${fullWsUri} id="btn_sb_${member.username}">${member.username}</a>`
+                    chatList.appendChild(listItem);
+                }
             }
             return data
         })
@@ -196,4 +198,32 @@ export function delChatInDB(chat){
         });
 
     return status_del
+};
+
+// fetch(domain + reqPathChat + chat.id + '/participant/' + user)
+
+
+export function isParticipant(user, chat){ 
+    console.log("We are into isParticipant", user, chat);
+    const fetchOptions = {
+        method: "GET", 
+        mode: 'cors', 
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + user.token
+        },
+    }; 
+
+    const is_participate = fetch(domain + reqPathChat + chat.id + '/participant/' + user.id, fetchOptions)
+        .then((response)=>{return response.json()})
+        .then((data)=>{
+            console.log("isParticipant RESULT: ", data)
+            return data.chat
+        })
+        .catch((error)=>{
+            console.log('In function isParticipate, an ERROR has occured:', error )
+            return error
+        })
+    return is_participate ? true : false
 };

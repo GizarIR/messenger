@@ -78,15 +78,15 @@ class ChatParticipantAPIListView(generics.ListAPIView):
         return queryset
 
 
-class ChatParticipantAPICreateView(generics.CreateAPIView):
+class ChatParticipantAPICreateView(generics.ListCreateAPIView):
     queryset = ChatParticipant.objects.all()
     serializer_class = ChatParticipantSerialaizer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
 class ChatParticipantAPIRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     queryset = ChatParticipant.objects.all()
     serializer_class = ChatParticipantSerialaizer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     # Ищем объект не по ID а по другим  параметрам полей
     def get_object(self):
