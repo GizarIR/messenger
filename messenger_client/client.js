@@ -155,13 +155,19 @@ btn_leave.addEventListener('click', async ()=>{
 
 // Это обработка создания непострественно комнаты чата - должна запускаться сразу после того как станет понятно имя Чата
 async function handleConnectToChat(chat_name){
-    
+    const user = JSON.parse(localStorage.getItem("messenger_user"));
+
     section.innerHTML = chatForm;
     showInterface();
     btn_home.style.visibility = "visible";
     btn_create.style.visibility = "visible";
     btn_leave.style.visibility = "visible";
-    btn_del.style.visibility = "visible";
+    if (cur_chat.id === user.id){
+        btn_del.style.visibility = "visible";
+    } else {
+        btn_del.style.visibility = "hidden";
+    } 
+    
     btn_profile.style.visibility = "visible";
 
     document.querySelector("#chat_name").textContent = "Chat's name: " + chat_name;
@@ -173,7 +179,7 @@ async function handleConnectToChat(chat_name){
         section.appendChild(pre);
     };
 
-    const user = JSON.parse(localStorage.getItem("messenger_user"));
+    // const user = JSON.parse(localStorage.getItem("messenger_user"));
     console.log('GOT TOKEN FOR WEBSOCKET: ' + user.token)
 
 
