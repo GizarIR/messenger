@@ -13,7 +13,6 @@ let statusSection;
 const lbl_status_connect = document.getElementById('status_connect');
 let cur_chat;
 let websocket;
-let new_user;
 
 
 async function initInterface(){
@@ -89,8 +88,7 @@ btn_profile.addEventListener('click', () => {
 btn_login.addEventListener('click', ()=>{
     if (isAuthenticated()){
         localStorage.clear();
-        // websocket.close();
-        // websocket = null;
+        document.title = "Client messenger"
         section.innerHTML = signupForm;
         btn_login.textContent = "Log in";
         showInterface();
@@ -243,6 +241,7 @@ async function handleProfileForm(cur_user){
     btn_login.textContent = cur_user.username + "/logout";
     document.forms.form_profile.username.value = cur_user.username;
     document.forms.form_profile.email.value = cur_user.email;
+    document.title = "CM for: " + cur_user.username 
 };
 
 
@@ -393,8 +392,7 @@ function handleLoginForm(){
                 .catch((error)=>{
                     console.log('An ERROR has occurred:', error )
                     return false
-                });
-
+                });   
             handleProfileForm(userFromResponse);
 
         };
