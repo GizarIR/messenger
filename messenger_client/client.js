@@ -393,9 +393,11 @@ function handleLoginForm(){
             });
 
         // Если получили доступ, то загружаем форму профиля
+        let user_profile={};
+
         if(tokenAccept){
 
-            const fetchOptions = {
+            let fetchOptions = {
                 method: "GET",
                 headers: {
                     'Accept': 'application/json',
@@ -408,21 +410,57 @@ function handleLoginForm(){
                 .then((response)=>{return response.json()})
                 .then((dataUser)=>{
                     console.log('User received:', dataUser);
-                    localStorage.clear();
-                    localStorage.setItem("messenger_user", `{
+                    const full_data_user = `{
                         "username": "${dataUser.username}",
                         "token": "${tokenAccept}",
                         "email": "${dataUser.email}",
                         "id": "${dataUser.id}"
-                    }`);
-                    return dataUser
+                    }`
+                    // localStorage.clear();
+                    // localStorage.setItem("messenger_user", `{
+                    //     "username": "${dataUser.username}",
+                    //     "token": "${tokenAccept}",
+                    //     "email": "${dataUser.email}",
+                    //     "id": "${dataUser.id}"
+                    // }`);
+                    return JSON.parse(full_data_user)
                 })
                 .catch((error)=>{
                     console.log('An ERROR has occurred:', error )
                     return false
                 });   
-            handleProfileForm(userFromResponse);
+            
+            if (userFromResponse){
+                console.log("userFromResponse", userFromResponse.token)
+                fetchOptions = {
+                    method: "GET",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': "Token " + userFromResponse.token
+                    }
+                }
 
+                user_profile = await fetch(domain + reqPathProfile + userFromResponse.id + "/", fetchOptions)
+                    .then((response)=>{return response.json()})
+                    .then((data_user)=>{
+                        console.log('User PROFILE recieved: ', data_user);
+                        localStorage.clear();
+                        localStorage.setItem("messenger_user", `{
+                            "username": "${data_user.username}",
+                            "token": "${userFromResponse.token}",
+                            "email": "${data_user.email}",
+                            "id": "${data_user.id}",
+                            "avatar": "${data_user.avatar}"
+                        }`);
+                        return data_user;
+                    })
+                    .catch((error)=>{
+                        console.log('When we got avatar URL an ERROR has occured:', error )
+                        return false
+                    })
+                    await handleProfileForm(user_profile);
+            }
         };
     });
 };
