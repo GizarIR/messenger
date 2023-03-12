@@ -33,6 +33,8 @@
 // width: 80px;
 
 
+{/* <img src="https://picsum.photos/40/40" alt="avatar"></img> */}
+
 // $ redis-cli
 // 127.0.0.1:6379> shutdown
 // not connected> quit

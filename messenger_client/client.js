@@ -4,7 +4,7 @@ import {
     addParticipantToChatDB, isParticipant, delChatPArticipantInDB 
 } from "./utils.js";
 import {
-    domain, reqPathChat, reqPathReg, reqPathLogin, reqPathSetUsername,
+    domain, reqPathChat, reqPathReg, reqPathLogin, reqPathSetUsername, reqPathProfile,
     chatList, section, btn_home, btn_login, btn_create, btn_del, btn_leave, btn_profile, sidebar,
     wsUri
 } from "./init.js";
@@ -264,7 +264,7 @@ async function handleSignupForm(){
         const newuser = JSON.parse(formDataJsonString);
 
         // готовим параметры POST запроса
-        const fetchOptions = {
+        let fetchOptions = {
             method: "POST", 
             mode: 'cors', 
             headers: { 
@@ -299,25 +299,52 @@ async function handleSignupForm(){
             accessAccept = await fetch(domain + reqPathLogin, fetchOptions)
                 .then((response)=>{return response.json()})
                 .then((dataToken)=>{
-                    console.log('Token recieved:', dataToken.auth_token);
-                    localStorage.clear();
-                    localStorage.setItem("messenger_user", `{
+                    console.log('Token recieved:', dataToken);
+                    const access_data = `{
                         "username": "${userForLogin.username}",
                         "token": "${dataToken.auth_token}",
                         "email": "${newuser.email}",
                         "id": "${regData.id}"
-                    }`);
-                    return true
+                    }`
+                    return JSON.parse(access_data)
                 })
                 .catch((error)=>{
                     console.log('An ERROR has occured:', error )
                     return false
                 });
         };
-
-        // Если получили доступ, то загружаем форму профиля
+        // Если получили доступ, jбновим инфу по Аватару и загружаем форму профиля
         if(accessAccept){
-            handleProfileForm(newuser);
+            console.log("accessAccept", accessAccept.token)
+            fetchOptions = {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': "Token " + accessAccept.token
+                }
+            }
+
+            const user_profile = await fetch(domain + reqPathProfile + accessAccept.id + "/", fetchOptions)
+                    .then((response)=>{return response.json()})
+                    .then((data_user)=>{
+                        console.log('User PROFILE recieved: ', data_user);
+                        localStorage.clear();
+                        localStorage.setItem("messenger_user", `{
+                            "username": "${data_user.username}",
+                            "token": "${accessAccept.token}",
+                            "email": "${data_user.email}",
+                            "id": "${data_user.id}",
+                            "avatar": "${data_user.avatar}"
+                        }`);
+                        return data_user;
+                    })
+                    .catch((error)=>{
+                        console.log('When we got avatar URL an ERROR has occured:', error )
+                        return false
+                    })
+
+            await handleProfileForm(user_profile);
         }
     }); //addEventListener callback
 };
