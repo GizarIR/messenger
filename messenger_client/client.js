@@ -24,7 +24,7 @@ async function initInterface(){
         section.innerHTML = signupForm;
         handleSignupForm();    
     }
-    console.log("Сработало window.onload")
+    // console.log("Сработало window.onload")
 };
 
 window.onload = initInterface();
@@ -33,7 +33,7 @@ window.onload = initInterface();
 function showInterface(){
     let cur_user = isAuthenticated();
     statusSection = document.querySelector('.form_h3_status').firstChild.textContent;
-    console.log(statusSection);
+    // console.log(statusSection);
 
     if (statusSection === "Registration"){
          handleSignupForm();
@@ -47,9 +47,6 @@ function showInterface(){
           handleProfileForm(cur_user);
     };
 
-    // if(statusSection == "Enter name of new chat"){
-    //     await handleCreateChatForm();
-    // };
 
     if(statusSection == "Chat"){
         handleChatForm();
@@ -101,7 +98,7 @@ btn_login.addEventListener('click', ()=>{
 
 
 btn_create.addEventListener('click', ()=>{
-    console.log("We are into Create Chat form")
+    // console.log("We are into Create Chat form")
     section.innerHTML = createChatForm;
     const form = document.getElementById('form_create_chat');
 
@@ -130,7 +127,7 @@ btn_del.addEventListener('click', async (event)=>{
         'message': `Message for all. Owner deleted chat...`
     }));
     const status_del = await delChatInDB(cur_chat);
-    console.log("Status deleting: ", status_del)
+    // console.log("Status deleting: ", status_del)
     websocket.close();
     websocket = null;
     section.innerHTML = profileForm;
@@ -159,7 +156,7 @@ async function handleConnectToChat(chat_name){
     btn_home.style.visibility = "visible";
     btn_create.style.visibility = "visible";
     btn_leave.style.visibility = "visible";
-    if (cur_chat.id === user.id){
+    if (cur_chat.owner == user.id){
         btn_del.style.visibility = "visible";
     } else {
         btn_del.style.visibility = "hidden";
@@ -177,7 +174,7 @@ async function handleConnectToChat(chat_name){
     };
 
     // const user = JSON.parse(localStorage.getItem("messenger_user"));
-    console.log('GOT TOKEN FOR WEBSOCKET: ' + user.token)
+    // console.log('GOT TOKEN FOR WEBSOCKET: ' + user.token)
 
 
     websocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/' + cur_chat.id + '/?token=' + user.token);
@@ -208,11 +205,11 @@ function addHandleToBtnChat(){
     for (let i = 0; i < chatList.children.length; i++){
         chatList.children[i].addEventListener('click',async ()=>{
             const chat_id = chatList.children[i].firstChild.id.match(/\d/g).join('')
-            console.log('Found chatID: ', chat_id);
+            // console.log('Found chatID: ', chat_id);
             cur_chat = await getChatFromDB(chat_id);
             const user = isAuthenticated();
             let is_participant = await isParticipant(user, cur_chat)
-            console.log("is_participant HERE: ", is_participant)
+            // console.log("is_participant HERE: ", is_participant)
             if (!is_participant){
                 await addParticipantToChatDB(user, cur_chat);
             }
@@ -223,8 +220,8 @@ function addHandleToBtnChat(){
 
 
 async function handleProfileForm(cur_user){
-    console.log('We are into Profile form')
-    console.log("Reciewed data USER fo render: ", cur_user)
+    // console.log('We are into Profile form')
+    // console.log("Reciewed data USER fo render: ", cur_user)
     section.innerHTML="";
     
     await loadChats();
@@ -273,7 +270,7 @@ async function handleProfileForm(cur_user){
         const regData = await fetch(domain + reqPathProfile + cur_user.id + "/", fetchOptions)
             .then((response)=>{return response.json()})
             .then((data)=>{
-                console.log('Registration data recieved:', data);
+                // console.log('Registration data recieved:', data);
                 return data
             })
             .catch((error)=>{
@@ -297,7 +294,7 @@ async function handleProfileForm(cur_user){
 
 
 async function handleSignupForm(){
-    console.log('We are into Registration form')
+    // console.log('We are into Registration form')
     const form = document.getElementById('form_signup');
     btn_home.style.visibility = "hidden";
     btn_create.style.visibility = "hidden";
@@ -330,7 +327,7 @@ async function handleSignupForm(){
         const regData = await fetch(domain + reqPathReg, fetchOptions)
             .then((response)=>{return response.json()})
             .then((data)=>{
-                console.log('Registration data recieved:', data);
+                // console.log('Registration data recieved:', data);
                 return data
             })
             .catch((error)=>{
@@ -351,7 +348,7 @@ async function handleSignupForm(){
             accessAccept = await fetch(domain + reqPathLogin, fetchOptions)
                 .then((response)=>{return response.json()})
                 .then((dataToken)=>{
-                    console.log('Token recieved:', dataToken);
+                    // console.log('Token recieved:', dataToken);
                     const access_data = `{
                         "username": "${userForLogin.username}",
                         "token": "${dataToken.auth_token}",
@@ -367,7 +364,7 @@ async function handleSignupForm(){
         };
         // Если получили доступ, jбновим инфу по Аватару и загружаем форму профиля
         if(accessAccept){
-            console.log("accessAccept", accessAccept.token)
+            // console.log("accessAccept", accessAccept.token)
             fetchOptions = {
                 method: "GET",
                 headers: {
@@ -380,7 +377,7 @@ async function handleSignupForm(){
             const user_profile = await fetch(domain + reqPathProfile + accessAccept.id + "/", fetchOptions)
                     .then((response)=>{return response.json()})
                     .then((data_user)=>{
-                        console.log('User PROFILE recieved: ', data_user);
+                        // console.log('User PROFILE recieved: ', data_user);
                         localStorage.clear();
                         localStorage.setItem("messenger_user", `{
                             "username": "${data_user.username}",
@@ -403,7 +400,7 @@ async function handleSignupForm(){
 
 
 function handleLoginForm(){
-    console.log('We are into Login form')
+    // console.log('We are into Login form')
     const form = document.getElementById('form_login');
     form.addEventListener('submit', async (event) => {
         event.preventDefault(); //отключаем поведение формы по умолчанию
@@ -411,7 +408,7 @@ function handleLoginForm(){
         //получаем данные в виде пары ключ:значение, в форме input name - ключ, value - значение
         const plainFormData = Object.fromEntries(formData.entries()); //в виде текста
 	    const formDataJsonString = JSON.stringify(plainFormData); //преобразуем в json
-        console.log("formDataJsonString :" + formDataJsonString);
+        // console.log("formDataJsonString :" + formDataJsonString);
         const cur_user = JSON.parse(formDataJsonString);
 
         // готовим параметры POST запроса
@@ -436,7 +433,7 @@ function handleLoginForm(){
         tokenAccept = await fetch(domain + reqPathLogin, fetchOptions)
             .then((response)=>{return response.json()})
             .then((dataToken)=>{
-                console.log('Token recieved:', dataToken.auth_token);
+                // console.log('Token recieved:', dataToken.auth_token);
                 return dataToken.auth_token
             })
             .catch((error)=>{
@@ -461,7 +458,7 @@ function handleLoginForm(){
             let userFromResponse = await fetch(domain + reqPathReg + 'me/', fetchOptions)
                 .then((response)=>{return response.json()})
                 .then((dataUser)=>{
-                    console.log('User received:', dataUser);
+                    // console.log('User received:', dataUser);
                     const full_data_user = `{
                         "username": "${dataUser.username}",
                         "token": "${tokenAccept}",
@@ -483,7 +480,7 @@ function handleLoginForm(){
                 });   
             
             if (userFromResponse){
-                console.log("userFromResponse", userFromResponse.token)
+                // console.log("userFromResponse", userFromResponse.token)
                 fetchOptions = {
                     method: "GET",
                     headers: {
@@ -496,7 +493,7 @@ function handleLoginForm(){
                 user_profile = await fetch(domain + reqPathProfile + userFromResponse.id + "/", fetchOptions)
                     .then((response)=>{return response.json()})
                     .then((data_user)=>{
-                        console.log('User PROFILE recieved: ', data_user);
+                        // console.log('User PROFILE recieved: ', data_user);
                         localStorage.clear();
                         localStorage.setItem("messenger_user", `{
                             "username": "${data_user.username}",
@@ -519,7 +516,7 @@ function handleLoginForm(){
 
 
 async function handleChatForm(){
-    console.log('We are into interface of chat');
+    // console.log('We are into interface of chat');
 
     const btn_send = document.getElementById('chat-message-submit');
     const input_message = document.getElementById('chat-message-input');

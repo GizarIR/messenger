@@ -22,7 +22,7 @@ export function getUserDB(token){
         },})
         .then((response)=>{return response.json()})
         .then((data)=>{
-            console.log("Got User from DB: ", data);
+            // console.log("Got User from DB: ", data);
             return data;
         })
         .catch((error) => {
@@ -55,7 +55,7 @@ export const loadChats = () => {
 
 
 export const writeChatToDB = (chat_name) =>{
-    console.log("We are into createChat");
+    // console.log("We are into createChat");
     const user = isAuthenticated();
     const body = {
         "name": chat_name,
@@ -77,7 +77,7 @@ export const writeChatToDB = (chat_name) =>{
     const created_chat = fetch(domain + reqPathChat, fetchOptions)
         .then((response)=>{return response.json()})
         .then((response_chat)=>{
-            console.log("Chat created: ", response_chat)
+            // console.log("Chat created: ", response_chat)
             return response_chat
         })
         .catch((error)=>{
@@ -88,7 +88,7 @@ export const writeChatToDB = (chat_name) =>{
 
 
 export const getChatFromDB = (chat_id) =>{
-    console.log("We are into getChatFromDB");
+    // console.log("We are into getChatFromDB");
     const user = isAuthenticated();
     
     const fetchOptions = {
@@ -104,7 +104,7 @@ export const getChatFromDB = (chat_id) =>{
     const chat = fetch(domain + reqPathChat + chat_id + "/", fetchOptions)
         .then((response)=>{return response.json()})
         .then((response_chat)=>{
-            console.log("Chat found: ", response_chat)
+            // console.log("Chat found: ", response_chat)
             return response_chat
         })
         .catch((error)=>{
@@ -115,12 +115,12 @@ export const getChatFromDB = (chat_id) =>{
 
 
 export async function loadChatMembers(cur_chat, render=true){
-    console.log("We are into loadChatMembers");
+    // console.log("We are into loadChatMembers");
     return await fetch(domain + reqPathChat + cur_chat.id + '/participant/')
     // return fetch(domain + reqPathChat + '1' + '/participant/')
         .then((response) => {return response.json()})
         .then((data) => {
-            console.log('My json Members:' , data)
+            // console.log('My json Members:' , data)
             if (render){
                 for (const member of data){
                     const listItem = document.createElement('li');
@@ -129,7 +129,7 @@ export async function loadChatMembers(cur_chat, render=true){
                     let fullWsUri = "#";
                     listItem.innerHTML = `<a href=${fullWsUri} id=btn_sb_${member.username}">${member.username}</a>`
                     listItem.onclick = () => {
-                        console.log('Found username: ', member.username);
+                        // console.log('Found username: ', member.username);
                         document.getElementById('chat-message-input').value = "=> " + member.username + ": ";
                     };
                     chatList.appendChild(listItem);
@@ -144,7 +144,7 @@ export async function loadChatMembers(cur_chat, render=true){
 
 
 export function addParticipantToChatDB(user, cur_chat){
-    console.log("We are into func addParticipantToChatDB");
+    // console.log("We are into func addParticipantToChatDB");
     const body = {
         "chat": cur_chat.id,
         "participant": user.id
@@ -166,7 +166,7 @@ export function addParticipantToChatDB(user, cur_chat){
     const status_operation = fetch(domain + reqPathChatParticipant, fetchOptions)
         .then((response)=>{return response.json()})
         .then((data)=>{
-            console.log("ChatParticipant created: ", data)
+            // console.log("ChatParticipant created: ", data)
             return data.status
         })
         .catch((error)=>{
@@ -179,7 +179,7 @@ export function addParticipantToChatDB(user, cur_chat){
 
 
 export async function delChatInDB(chat){
-    console.log("We will delete chat....", chat)
+    // console.log("We will delete chat....", chat)
     const user = isAuthenticated();
     const fetchOptions = {
         method: "DELETE", 
@@ -207,7 +207,7 @@ export async function delChatInDB(chat){
 
 
 export async function isParticipant(user, chat){ 
-    console.log("We are into isParticipant", user.id, chat.id);
+    // console.log("We are into isParticipant", user.id, chat.id);
     const fetchOptions = {
         method: "GET", 
         mode: 'cors', 
@@ -221,7 +221,7 @@ export async function isParticipant(user, chat){
     const is_participant = await fetch(domain + reqPathChat + chat.id + '/participant/' + user.id, fetchOptions)
         .then((response)=>{return response.json()})
         .then((data)=>{
-            console.log("isParticipant RESULT: ", data)
+            // console.log("isParticipant RESULT: ", data)
             return data.chat
         })
         .catch((error)=>{
@@ -233,7 +233,7 @@ export async function isParticipant(user, chat){
 };
 
 export async function delChatPArticipantInDB(chat){
-    console.log("We will delete ChatPArticipanteDel....", chat)
+    // console.log("We will delete ChatPArticipanteDel....", chat)
     const user = isAuthenticated();
     const fetchOptions = {
         method: "DELETE", 
