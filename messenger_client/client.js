@@ -241,6 +241,7 @@ async function handleProfileForm(cur_user){
     document.forms.form_profile.username.value = cur_user.username;
     document.forms.form_profile.email.value = cur_user.email;
     document.title = "CM for: " + cur_user.username 
+    document.getElementById("user_avatar").setAttribute("src", cur_user.avatar)
 };
 
 
