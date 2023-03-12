@@ -7,7 +7,7 @@ from rest_framework import generics, request, viewsets, mixins, permissions
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from .models import Chat, User, ChatParticipant
-from .serializers import ChatSerializer, UserSerializer, \
+from .serializers import ChatSerializer, ProfileSerializer, \
     ChatParticipantListSerialaizer, ChatParticipantSerialaizer
 
 from django.contrib.auth.models import AnonymousUser
@@ -61,9 +61,9 @@ class ChatAPIDestroyView(generics.DestroyAPIView):
     permission_classes = (IsAuthenticated, IsOwnerChatOrReadOnly) # настройка доступа
 
 
-class UserAPIUpdateView(generics.UpdateAPIView):
+class ProfileAPIUpdateView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = ProfileSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
 class ChatParticipantAPIListView(generics.ListAPIView):

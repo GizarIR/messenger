@@ -2,7 +2,7 @@
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.1/topics/http/urls/
-Examples:
+examples:
 Function views
     1. Add an import:  from my_app import views
     2. Add a URL to urlpatterns:  path('', views.home, name='home')
@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
+from django.conf.urls.static import static
+from django.conf import settings
 
 from app.views import *
 
@@ -26,9 +28,9 @@ urlpatterns = [
     path('api/v1/chat/<int:pk>/participant/', ChatParticipantAPIListView.as_view()),
     path('api/v1/chat/<int:pk>/', ChatAPIUpdateView.as_view()),
     path('api/v1/chat/<int:pk>/delete/', ChatAPIDestroyView.as_view()),
-    path('api/v1/user/<int:pk>/update/', UserAPIUpdateView.as_view()),
+    path('api/v1/profile/<int:pk>/', ProfileAPIUpdateView.as_view()),
     path('api/v1/drf-auth/', include('rest_framework.urls')),
     # path('api/v1/auth/', include('djoser.urls.jwt')),
     path('api/v1/auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
-]
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

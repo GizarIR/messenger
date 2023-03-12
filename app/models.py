@@ -4,8 +4,8 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    avatar = models.ImageField(upload_to='avatars/%Y/%m/%d/', default=None, blank=True, null=True)
-
+    # avatar = models.ImageField(upload_to='avatars/%Y/%m/%d/', default=None, blank=True, null=True)
+    avatar = models.ImageField(upload_to='avatars/%Y/%m/%d/', default='avatars/default.jpg', blank=True, null=True)
     def __str__(self):
         return f'{self.username}'
 

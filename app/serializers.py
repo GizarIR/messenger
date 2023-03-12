@@ -14,10 +14,11 @@ class MessageSerializer(serializers.ModelSerializer):
         model = Message
         fields = ('author', 'message', 'chat', 'time_create', 'time_update')
 
-class UserSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
+    avatar = serializers.ImageField(max_length=None, use_url=True)
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'avatar', 'email')
+        fields = ('id', 'username', 'avatar', 'email')
 
 class ChatParticipantListSerialaizer(serializers.ModelSerializer):
     class Meta:
