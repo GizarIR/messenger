@@ -224,6 +224,7 @@ function addHandleToBtnChat(){
 
 async function handleProfileForm(cur_user){
     console.log('We are into Profile form')
+    console.log("Reciewed data USER fo render: ", cur_user)
     section.innerHTML="";
     
     await loadChats();

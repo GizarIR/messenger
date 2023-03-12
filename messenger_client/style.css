@@ -27,7 +27,20 @@
     flex: auto; /* занимает весь предоставленный размер */
     text-align: center;
     color: brown;
+    /* padding: 0 0.5rem; */
     /* background-color: aliceblue; */
+}
+
+.avatar{
+    flex: auto; /* занимает весь предоставленный размер */
+    text-align: center;
+    color: brown;
+    padding: 0 0.5rem;
+    /* background-color: aliceblue; */
+}
+
+.avatar img{
+    border-radius: 50%;
 }
 
 .nav__list{
