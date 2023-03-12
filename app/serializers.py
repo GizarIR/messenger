@@ -15,7 +15,7 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = ('author', 'message', 'chat', 'time_create', 'time_update')
 
 class ProfileSerializer(serializers.ModelSerializer):
-    avatar = serializers.ImageField(max_length=None, use_url=True)
+    avatar = serializers.ImageField(max_length=None, use_url=True, required=False)
     class Meta:
         model = User
         fields = ('id', 'username', 'avatar', 'email')
