@@ -18,7 +18,7 @@ export const signupForm = `
 `
 
 export const profileForm =`
-<form class="form" id="form_profile">
+<form class="form" id="form_profile" enctype="multipart/form-data">
     <h3 class="form_h3_title form_h3_status">Your profile</h3>
     <label class="label">
         <span class="label__title">Username:</span>
@@ -26,7 +26,7 @@ export const profileForm =`
     </label>
     <label class="label">
         <span class="label__title">Avatar:</span>
-        <input class="label__input" name="password" type="file">
+        <input class="label__input_file" name="avatar" type="file">
     </label>
     <label class="label">
         <span class="label__title">Email:</span>

@@ -242,6 +242,57 @@ async function handleProfileForm(cur_user){
     document.forms.form_profile.email.value = cur_user.email;
     document.title = "CM for: " + cur_user.username 
     document.getElementById("user_avatar").setAttribute("src", cur_user.avatar)
+    const form = document.getElementById('form_profile');
+
+    form.addEventListener('submit', async (event) => {        
+        event.preventDefault(); //отключаем поведение формы по умолчанию
+        const formData = new FormData(form); //создаем объект для обработки данных формы
+        //получаем данные в виде пары ключ:значение, в форме input name - ключ, value - значение 
+        const plainFormData = Object.fromEntries(formData.entries()); //в виде текста
+	    const formDataJsonString = JSON.stringify(plainFormData); //преобразуем в json
+        // console.log("formDataJsonString:   ", formDataJsonString)
+        const form_user = JSON.parse(formDataJsonString);
+        const cur_user = isAuthenticated();
+        const fileInput = document.querySelector(".label__input_file")
+        formData.append('file', fileInput.files[0]);
+
+        // готовим параметры POST запроса
+        let fetchOptions = {
+            method: "PUT", 
+            mode: 'cors', 
+            headers: { 
+                // 'Accept': 'application/json',
+                // 'Content-Type': 'multipart/form-data',
+                'Authorization': "Token " + cur_user.token
+            },
+            body: formData
+        
+        }; 
+
+        //отправляем асинхроныый запрос для созданияпользователя на 'http://127.0.0.1:8000/api/v1/auth/users/'
+        const regData = await fetch(domain + reqPathProfile + cur_user.id + "/", fetchOptions)
+            .then((response)=>{return response.json()})
+            .then((data)=>{
+                console.log('Registration data recieved:', data);
+                return data
+            })
+            .catch((error)=>{
+                console.log('When saved PROFILE DATA an ERROR has occured:', error )
+            })
+        
+        if(regData.id){
+            localStorage.clear();
+            localStorage.setItem("messenger_user", `{
+                "username": "${regData.username}",
+                "token": "${cur_user.token}",
+                "email": "${regData.email}",
+                "id": "${regData.id}",
+                "avatar": "${regData.avatar}"
+            }`);
+            document.getElementById("user_avatar").setAttribute("src", regData.avatar)
+        }
+    });
+
 };
 
 
