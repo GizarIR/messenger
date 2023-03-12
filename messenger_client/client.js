@@ -243,7 +243,7 @@ async function handleProfileForm(cur_user){
 };
 
 
-function handleSignupForm(){
+async function handleSignupForm(){
     console.log('We are into Registration form')
     const form = document.getElementById('form_signup');
     btn_home.style.visibility = "hidden";
@@ -292,6 +292,7 @@ function handleSignupForm(){
         fetchOptions.body = JSON.stringify(userForLogin);
         let accessAccept = false;
 
+        // console.log("REGDATA:", regData.id)
         // Если получили ID, то логинимся и сохраняем токен в локальное хранилище
         if (regData.id){
             accessAccept = await fetch(domain + reqPathLogin, fetchOptions)
@@ -302,7 +303,8 @@ function handleSignupForm(){
                     localStorage.setItem("messenger_user", `{
                         "username": "${userForLogin.username}",
                         "token": "${dataToken.auth_token}",
-                        "email": "${newuser.email}"
+                        "email": "${newuser.email}",
+                        "id": "${regData.id}"
                     }`);
                     return true
                 })
@@ -420,7 +422,7 @@ async function handleChatForm(){
         input_message.value = '';
         chatList.innerHTML="";
         loadChatMembers(cur_chat);
-        addHandleToBtnParticipant();
+        // addHandleToBtnParticipant();
     };
 
     chatList.innerHTML="";
