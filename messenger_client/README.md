@@ -12,4 +12,4 @@ For launch application you can make follow:
 3. run: "python3 -m http.server 8080 --bind 127.0.0.1" . You can change port 8080 if you need launch more than 1 instance appliction
 4. launch browser (Firefox, Chrome ...)
 5. text to browser address bar: http://localhost:8080/index.html
-or you can use extantion for VS Code: "Live server"
+or you can use extension for VS Code: "Live server"

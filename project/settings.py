@@ -93,6 +93,11 @@ CHANNEL_LAYERS = {
     },
 }
 
+# CHANNELS_LAYERS = {
+#   'default': {
+#     'BACKEND': 'channels.layers.InMemoryChannelLayer'
+#   }
+# }
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
