@@ -21,8 +21,8 @@ Project include 2 part:
 3. Перейдите в папку проекта: <br> ``` cd messenger_dir/```
 4. Клонируйте репозиторий проекта в папку messenger: <br> ```git clone https://github.com/GizarIR/messenger.git```
 5. Устанавливаем виртуальное окружение проекта: <br> ```python3 -m venv venv```
-6. Перейдите в папку проекта: <br> ``` cd messenger/```
 7. Активируем виртуальное окружение: <br> ``` source venv/bin/activate ```
+8. Перейдите в папку проекта: <br> ``` cd messenger/```
 5. Установите зависимости для проекта: <br> ```pip install -r requirements.txt```
 6. Убедитесь, что у вас запущен Redis, если это не так, то запустите его: <br> ```redis-server```
 7. Запустите серверную часть проекта: <br> ```python manage.py runserver```
